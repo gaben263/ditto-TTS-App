@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ditto</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   VARIABLES & RESET
+================================================================ */
+:root {
+  --sb-bg:        #1A0F3C;
+  --sb-hover:     #2A1860;
+  --sb-active:    #2D1B69;
+  --accent:       #7B8DF0;
+  --accent-dark:  #5B6DD0;
+  --accent-light: #EEF0FF;
+  --content-bg:   #F4F5FB;
+  --panel-bg:     #FFFFFF;
+  --text-1:       #111827;
+  --text-2:       #6B7280;
+  --text-3:       #9CA3AF;
+  --border:       #E5E7EB;
+  --border-light: #F3F4F6;
+  --hi-bg:        rgba(123,141,240,.2);
+  --hover-bg:     rgba(123,141,240,.08);
+  --shadow-sm:    0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:    0 4px 12px rgba(0,0,0,.12);
+  --shadow-lg:    0 8px 28px rgba(0,0,0,.16);
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px;
+  --sb-w:  240px;
+  --rp-w:  260px;
+  --bb-h:  72px;
+  --ease:  0.15s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--content-bg); color: var(--text-1); overflow: hidden;
+}
+
+/* ================================================================
+   LAYOUT
+================================================================ */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ================================================================
+   LEFT SIDEBAR
+================================================================ */
+.sidebar-left {
+  width: var(--sb-w); background: var(--sb-bg);
+  display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden;
+}
+.sb-logo { padding: 22px 18px 14px; display: flex; align-items: center; }
+.logo-text {
+  font-family: 'Fredoka One', cursive; font-size: 30px;
+  color: #7B8DF0; letter-spacing: -0.5px; line-height: 1;
+  text-shadow: 0 0 40px rgba(123,141,240,.4);
+}
+.sb-nav { padding: 6px 8px; display: flex; flex-direction: column; gap: 1px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: var(--r-sm);
+  color: rgba(255,255,255,.6); font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none; background: none; width: 100%; text-align: left;
+  transition: background var(--ease), color var(--ease);
+}
+.nav-item:hover { background: var(--sb-hover); color: rgba(255,255,255,.9); }
+.nav-item.active { background: var(--sb-active); color: #fff; }
+.nav-item svg { flex-shrink: 0; }
+.sb-section-title {
+  padding: 12px 18px 4px; font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,.28); letter-spacing: .8px; text-transform: uppercase;
+}
+.sb-files { flex: 1; overflow-y: auto; padding: 2px 8px 8px; }
+.sb-files::-webkit-scrollbar { width: 3px; }
+.sb-files::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 2px; }
+.date-group { margin-bottom: 2px; }
+.date-label { padding: 7px 10px 3px; font-size: 10px; font-weight: 600; color: rgba(255,255,255,.28); }
+.file-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: var(--r-sm);
+  cursor: pointer; position: relative; transition: background var(--ease);
+}
+.file-item:hover { background: var(--sb-hover); }
+.file-item.active { background: var(--sb-active); }
+.file-icon {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: rgba(255,255,255,.08);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.file-info { flex: 1; min-width: 0; }
+.file-name { font-size: 12px; font-weight: 500; color: rgba(255,255,255,.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-meta { font-size: 10px; color: rgba(255,255,255,.32); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-menu-btn {
+  opacity: 0; padding: 4px; border-radius: 4px;
+  color: rgba(255,255,255,.5); background: none; border: none;
+  cursor: pointer; transition: opacity var(--ease); flex-shrink: 0;
+}
+.file-item:hover .file-menu-btn { opacity: 1; }
+.file-menu-btn:hover { background: rgba(255,255,255,.1); }
+.sb-bottom { padding: 8px; border-top: 1px solid rgba(255,255,255,.06); }
+
+/* ================================================================
+   CONTENT
+================================================================ */
+.content-main {
+  flex: 1; display: flex; flex-direction: column;
+  overflow: hidden; background: var(--content-bg); position: relative;
+}
+.content-header {
+  padding: 18px 28px 14px; border-bottom: 1px solid var(--border);
+  background: var(--panel-bg); display: none;
+}
+.doc-title-row { display: flex; align-items: center; gap: 8px; }
+.doc-title { font-size: 18px; font-weight: 600; color: var(--text-1); }
+.btn-rename-icon {
+  background: none; border: none; color: var(--text-3);
+  cursor: pointer; padding: 2px; border-radius: 4px;
+  display: flex; align-items: center; transition: color var(--ease);
+}
+.btn-rename-icon:hover { color: var(--accent); }
+.doc-meta { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+.content-area {
+  flex: 1; overflow-y: auto; padding: 28px 32px;
+  padding-bottom: calc(var(--bb-h) + 28px);
+}
+.content-area::-webkit-scrollbar { width: 6px; }
+.content-area::-webkit-scrollbar-track { background: transparent; }
+.content-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ================================================================
+   UPLOAD AREA
+================================================================ */
+.upload-wrap { display: flex; align-items: center; justify-content: center; min-height: 360px; height: 100%; }
+.dropzone {
+  border: 2px dashed var(--border); border-radius: var(--r-lg);
+  padding: 48px 40px; background: var(--panel-bg);
+  text-align: center; max-width: 440px; width: 100%;
+  cursor: pointer; transition: border-color var(--ease), background var(--ease);
+}
+.dropzone:hover, .dropzone.drag-over { border-color: var(--accent); background: var(--accent-light); }
+.upload-icon-circle {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--accent-light); color: var(--accent);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
+}
+.upload-h { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+.upload-sub { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 20px; }
+.btn-primary {
+  background: var(--accent); color: #fff; border: none;
+  padding: 10px 26px; border-radius: 8px; font-size: 14px;
+  font-weight: 600; cursor: pointer; font-family: inherit;
+  transition: background var(--ease), transform var(--ease);
+}
+.btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); }
+.upload-hint { font-size: 11px; color: var(--text-3); margin-top: 10px; }
+
+/* ================================================================
+   PROSE — texto corrido com estrutura de livro
+================================================================ */
+#text-sections { display: none; }
+
+.prose-body {
+  background: var(--panel-bg); border-radius: var(--r-md);
+  padding: 36px 44px; box-shadow: var(--shadow-sm);
+  max-width: 780px; margin: 0 auto;
+}
+
+/* Título principal (ALL CAPS, capítulo) */
+.prose-h1 {
+  font-size: 18px; font-weight: 700;
+  color: var(--text-1); line-height: 1.3;
+  letter-spacing: 0.8px;
+  text-align: center;
+  margin: 2.4em 0 1em;
+}
+.prose-h1:first-child { margin-top: 0; }
+
+/* Subtítulo / seção */
+.prose-h2 {
+  font-size: 15px; font-weight: 600;
+  color: var(--text-2); line-height: 1.4;
+  margin: 2em 0 0.7em;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-light);
+}
+.prose-h2:first-child { margin-top: 0; }
+
+/* Parágrafo de corpo */
+.prose-p {
+  font-size: 16px; line-height: 2;
+  color: var(--text-1);
+  margin-bottom: 1.2em;
+  text-align: justify; hyphens: auto;
+}
+.prose-p:last-child { margin-bottom: 0; }
+
+/* Span interativo de frase */
+.sentence {
+  cursor: pointer; border-radius: 3px;
+  padding: 2px 2px; margin: -2px -2px;
+  transition: background var(--ease); display: inline;
+}
+.sentence:hover { background: var(--hover-bg); }
+.sentence.active {
+  background: var(--hi-bg);
+  color: var(--accent-dark);
+}
+
+/* ================================================================
+   BOTTOM BAR
+================================================================ */
+.bottom-bar {
+  position: fixed; bottom: 0;
+  left: var(--sb-w); right: var(--rp-w);
+  height: var(--bb-h);
+  background: var(--panel-bg); border-top: 1px solid var(--border);
+  display: none; align-items: center;
+  padding: 0 20px; gap: 14px;
+  box-shadow: 0 -4px 16px rgba(0,0,0,.07); z-index: 100;
+}
+.pb-controls { display: flex; align-items: center; gap: 6px; }
+.btn-ctrl {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: none; background: none; color: var(--text-2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background var(--ease), color var(--ease);
+}
+.btn-ctrl:hover:not(:disabled) { background: var(--border-light); color: var(--text-1); }
+.btn-ctrl:disabled { opacity: .3; cursor: not-allowed; }
+.btn-play-main {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--accent); color: #fff; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: background var(--ease), transform var(--ease);
+  box-shadow: 0 4px 12px rgba(123,141,240,.4);
+}
+.btn-play-main:hover { background: var(--accent-dark); transform: scale(1.06); }
+.pb-progress { flex: 1; display: flex; align-items: center; gap: 10px; }
+.pb-text { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.waveform { flex: 1; display: flex; align-items: center; gap: 2px; height: 32px; overflow: hidden; }
+.w-bar {
+  flex: 1; background: #10B981; border-radius: 1px;
+  min-width: 2px; max-width: 4px; transition: height .15s ease;
+}
+@keyframes wavepulse { 0%,100%{height:3px} 50%{height:22px} }
+.waveform.playing .w-bar              { animation: wavepulse .9s ease-in-out infinite; }
+.waveform.playing .w-bar:nth-child(2n)  { animation-delay: .07s; }
+.waveform.playing .w-bar:nth-child(3n)  { animation-delay: .14s; }
+.waveform.playing .w-bar:nth-child(4n)  { animation-delay: .21s; }
+.waveform.playing .w-bar:nth-child(5n)  { animation-delay: .28s; }
+.waveform.playing .w-bar:nth-child(7n)  { animation-delay: .35s; }
+.waveform.playing .w-bar:nth-child(11n) { animation-delay: .1s; }
+.pb-right { display: flex; align-items: center; gap: 10px; }
+.speed-mini {
+  font-size: 12px; font-weight: 600;
+  background: var(--border-light); border: none;
+  border-radius: 6px; padding: 5px 9px;
+  color: var(--text-2); cursor: pointer; font-family: inherit;
+}
+.speed-mini:focus { outline: none; }
+.autoscroll-label {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--text-3); cursor: pointer; user-select: none;
+}
+
+/* ================================================================
+   RIGHT SIDEBAR
+================================================================ */
+.sidebar-right {
+  width: var(--rp-w); background: var(--panel-bg);
+  border-left: 1px solid var(--border);
+  display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;
+}
+.sidebar-right::-webkit-scrollbar { width: 4px; }
+.sidebar-right::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.rp-section { padding: 18px 20px; border-bottom: 1px solid var(--border-light); }
+.rp-title { font-size: 10px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; }
+.voice-select {
+  width: 100%; padding: 8px 10px;
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  font-size: 13px; color: var(--text-1); background: #fff;
+  cursor: pointer; font-family: inherit;
+}
+.voice-select:focus { outline: none; border-color: var(--accent); }
+.ctrl-row { display: flex; align-items: center; justify-content: space-between; margin: 14px 0 8px; }
+.ctrl-row-label { font-size: 13px; font-weight: 500; color: var(--text-1); }
+.ctrl-badge { font-size: 12px; font-weight: 700; color: var(--accent); background: var(--accent-light); padding: 2px 8px; border-radius: 4px; }
+.slider {
+  width: 100%; -webkit-appearance: none;
+  height: 4px; border-radius: 2px;
+  background: var(--border); outline: none; cursor: pointer;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(123,141,240,.2); transition: box-shadow var(--ease);
+}
+.slider::-webkit-slider-thumb:hover { box-shadow: 0 0 0 5px rgba(123,141,240,.3); }
+.slider-labels { position: relative; height: 14px; margin-top: 5px; }
+.slider-labels span {
+  position: absolute; font-size: 10px; color: var(--text-3);
+  transform: translateX(-50%);
+}
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.stat-card { background: var(--content-bg); border-radius: var(--r-sm); padding: 10px; text-align: center; }
+.stat-val { font-size: 16px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+.stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+.btn-action {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 9px 12px;
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  background: #fff; color: var(--text-1); font-size: 13px; font-weight: 500;
+  cursor: pointer; margin-bottom: 8px; font-family: inherit;
+  transition: background var(--ease), border-color var(--ease);
+}
+.btn-action:hover { background: var(--border-light); border-color: transparent; }
+.btn-action:last-child { margin-bottom: 0; }
+.btn-action.danger { color: #EF4444; }
+.btn-action.danger:hover { background: #FEF2F2; }
+
+/* ================================================================
+   CONTEXT MENU
+================================================================ */
+.ctx-menu {
+  position: fixed; background: var(--panel-bg);
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  box-shadow: var(--shadow-lg); padding: 4px;
+  min-width: 165px; z-index: 1000; display: none;
+}
+.ctx-menu.open { display: block; }
+.ctx-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 12px; font-size: 13px; color: var(--text-1);
+  border-radius: var(--r-sm); cursor: pointer;
+  border: none; background: none; width: 100%; text-align: left; font-family: inherit;
+  transition: background var(--ease);
+}
+.ctx-item:hover { background: var(--border-light); }
+.ctx-item.danger { color: #EF4444; }
+.ctx-item.danger:hover { background: #FEF2F2; }
+.ctx-sep { height: 1px; background: var(--border); margin: 4px 0; }
+
+/* ================================================================
+   LOADING & TOAST
+================================================================ */
+.loading-overlay {
+  position: absolute; inset: 0; background: rgba(255,255,255,.88);
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 50; backdrop-filter: blur(2px);
+}
+.spinner {
+  width: 36px; height: 36px; border: 3px solid var(--border);
+  border-top-color: var(--accent); border-radius: 50%;
+  animation: spin .65s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-msg { font-size: 13px; color: var(--text-2); margin-top: 12px; }
+.toast-wrap {
+  position: fixed; bottom: calc(var(--bb-h) + 14px);
+  right: calc(var(--rp-w) + 14px); z-index: 300;
+  display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+}
+.toast {
+  background: #1F2937; color: #fff; padding: 10px 16px;
+  border-radius: var(--r-md); font-size: 13px; box-shadow: var(--shadow-md);
+  animation: toastIn .28s ease forwards; pointer-events: none;
+}
+@keyframes toastIn  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes toastOut { to{opacity:0;transform:translateY(-6px)} }
+
+/* ================================================================
+   MISC
+================================================================ */
+.no-files { padding: 14px 18px; font-size: 12px; color: rgba(255,255,255,.28); line-height: 1.5; }
+.kb-hint { font-size: 10px; color: var(--text-3); padding: 0 20px 14px; line-height: 1.6; }
+.kb-hint span { background: var(--border-light); border-radius: 3px; padding: 1px 5px; font-weight: 600; }
+#file-input { display: none; }
+
+/* ================================================================
+   RESPONSIVE — TABLET
+================================================================ */
+@media (max-width: 1024px) {
+  :root { --sb-w: 60px; --rp-w: 220px; }
+  .sb-section-title, .file-info, .date-label, .nav-item span { display: none; }
+  .nav-item { justify-content: center; padding: 10px; }
+  .sb-logo { justify-content: center; }
+  .file-item { justify-content: center; }
+  .file-menu-btn { display: none; }
+  .sb-bottom .nav-item { justify-content: center; }
+  .prose-body { padding: 24px 28px; }
+}
+
+/* ================================================================
+   RESPONSIVE — MOBILE
+================================================================ */
+@media (max-width: 700px) {
+  :root { --sb-w: 0px; --rp-w: 0px; --bb-h: 80px; }
+  .sidebar-left, .sidebar-right { display: none; }
+  .bottom-bar { left: 0; right: 0; flex-wrap: wrap; height: auto; padding: 12px 14px 14px; gap: 10px; }
+  .content-area { padding: 14px; padding-bottom: 100px; }
+  .content-header { padding: 14px 14px 10px; }
+  .pb-right { flex-wrap: wrap; gap: 8px; }
+  .toast-wrap { right: 14px; bottom: 95px; }
+  .prose-body { padding: 18px 16px; }
+  .prose-p { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<input type="file" id="file-input" accept=".pdf">
+
+<div class="app">
+
+  <!-- ===================== LEFT SIDEBAR ===================== -->
+  <aside class="sidebar-left">
+    <div class="sb-logo"><span class="logo-text">ditto</span></div>
+    <nav class="sb-nav">
+      <button class="nav-item active" onclick="navClick(this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" onclick="triggerUpload()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <span>Importar PDF</span>
+      </button>
+      <button class="nav-item" onclick="navClick(this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <span>Todos</span>
+      </button>
+      <button class="nav-item" onclick="navClick(this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>Favoritos</span>
+      </button>
+    </nav>
+    <div class="sb-section-title">Arquivos</div>
+    <div class="sb-files" id="sb-files"></div>
+    <div class="sb-bottom">
+      <button class="nav-item" onclick="triggerUpload()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Carregar PDF</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="content-main">
+    <div class="loading-overlay" id="loading-overlay">
+      <div class="spinner"></div>
+      <div class="loading-msg">Processando PDF…</div>
+    </div>
+    <div class="content-header" id="content-header">
+      <div class="doc-title-row">
+        <span class="doc-title" id="doc-title"></span>
+        <button class="btn-rename-icon" title="Renomear" onclick="renameActive()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+        </button>
+      </div>
+      <div class="doc-meta" id="doc-meta"></div>
+    </div>
+    <div class="content-area" id="content-area">
+      <div class="upload-wrap" id="upload-wrap">
+        <div class="dropzone" id="dropzone" onclick="triggerUpload()">
+          <div class="upload-icon-circle">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+            </svg>
+          </div>
+          <div class="upload-h">Carregue seu PDF</div>
+          <div class="upload-sub">Arraste e solte um arquivo PDF aqui,<br>ou clique para selecionar do computador</div>
+          <button class="btn-primary" onclick="event.stopPropagation(); triggerUpload()">Selecionar arquivo</button>
+          <div class="upload-hint">Apenas PDFs com texto selecionável são suportados</div>
+        </div>
+      </div>
+      <div id="text-sections"></div>
+    </div>
+  </main>
+
+  <!-- ===================== BOTTOM BAR ===================== -->
+  <div class="bottom-bar" id="bottom-bar">
+    <div class="pb-controls">
+      <button class="btn-ctrl" id="btn-prev" onclick="prevChunk()" title="Anterior (←)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+      </button>
+      <button class="btn-play-main" id="btn-play" onclick="togglePlay()" title="Play / Pause (Espaço)">
+        <svg id="icon-play"  width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg id="icon-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </button>
+      <button class="btn-ctrl" id="btn-next" onclick="nextChunk()" title="Próximo (→)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+      </button>
+      <button class="btn-ctrl" id="btn-stop" onclick="stopSpeech()" title="Parar (Esc)" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+      </button>
+    </div>
+    <div class="pb-progress">
+      <span class="pb-text" id="pb-progress">0 / 0</span>
+      <div class="waveform" id="waveform"></div>
+      <span class="pb-text" id="pb-elapsed">0:00</span>
+    </div>
+    <div class="pb-right">
+      <select class="speed-mini" id="speed-mini" onchange="setRate(parseFloat(this.value))">
+        <option value="0.25">0.25×</option><option value="0.5">0.5×</option>
+        <option value="0.75">0.75×</option><option value="1" selected>1×</option>
+        <option value="1.25">1.25×</option><option value="1.5">1.5×</option>
+        <option value="1.75">1.75×</option><option value="2">2×</option>
+      </select>
+      <label class="autoscroll-label" title="Rolar automaticamente">
+        <input type="checkbox" id="autoscroll" checked><span>Auto scroll</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- ===================== RIGHT SIDEBAR ===================== -->
+  <aside class="sidebar-right">
+    <div class="rp-section">
+      <div class="rp-title">Voz</div>
+      <select class="voice-select" id="voice-select" onchange="setVoice(this.value)">
+        <option>Carregando vozes…</option>
+      </select>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-title">Velocidade</div>
+      <div class="ctrl-row">
+        <span class="ctrl-row-label">Ritmo</span>
+        <span class="ctrl-badge" id="speed-badge">1×</span>
+      </div>
+      <input type="range" class="slider" id="speed-slider"
+             min="0" max="2" step="0.05" value="1"
+             oninput="setRate(parseFloat(this.value))">
+      <div class="slider-labels">
+        <span style="left:0%">0×</span>
+        <span style="left:50%">1×</span>
+        <span style="left:100%">2×</span>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-title">Áudio</div>
+      <div class="ctrl-row">
+        <span class="ctrl-row-label">Volume</span>
+        <span class="ctrl-badge" id="vol-badge">100%</span>
+      </div>
+      <input type="range" class="slider" id="vol-slider"
+             min="0" max="1" step="0.05" value="1"
+             oninput="setVolume(parseFloat(this.value))">
+      <div class="slider-labels">
+        <span style="left:0%">0%</span>
+        <span style="left:50%">50%</span>
+        <span style="left:100%">100%</span>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-title">Documento</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-val" id="st-sents">—</div><div class="stat-lbl">Frases</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-words">—</div><div class="stat-lbl">Palavras</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-chars">—</div><div class="stat-lbl">Caracteres</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-time">—</div><div class="stat-lbl">Tempo est.</div></div>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-title">Ações</div>
+      <button class="btn-action" onclick="toggleFavorite()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span id="fav-label">Adicionar aos favoritos</span>
+      </button>
+      <button class="btn-action" onclick="copyText()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copiar texto
+      </button>
+      <button class="btn-action danger" onclick="deleteActiveFile()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+        Excluir arquivo
+      </button>
+    </div>
+
+    <div class="kb-hint">
+      <span>Espaço</span> Play/Pause &nbsp;
+      <span>←</span><span>→</span> Frase &nbsp;
+      <span>Esc</span> Parar
+    </div>
+  </aside>
+</div>
+
+<!-- Context menu -->
+<div class="ctx-menu" id="ctx-menu">
+  <button class="ctx-item" onclick="ctxAction('open')">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Abrir
+  </button>
+  <button class="ctx-item" onclick="ctxAction('favorite')">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Favoritar
+  </button>
+  <button class="ctx-item" onclick="ctxAction('rename')">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>Renomear
+  </button>
+  <div class="ctx-sep"></div>
+  <button class="ctx-item danger" onclick="ctxAction('delete')">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Excluir
+  </button>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+'use strict';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ──────────────────────────────────────────────
+// STATE
+// ──────────────────────────────────────────────
+const S = {
+  files:         [],
+  activeId:      null,
+  // blocks = [{ type:'h1'|'h2'|'p', sentences:['...'] }]
+  blocks:        [],
+  chunks:        [],   // flat sentence array (= blocks.flatMap(b=>b.sentences))
+  currentChunk:  -1,
+  isSpeaking:    false,
+  isPaused:      false,
+  voices:        [],
+  selectedVoice: null,
+  rate:          1.0,
+  volume:        1.0,
+  _pendingVoice: null,
+  elapsedSec:    0,
+};
+
+let _ctxFileId   = null;
+let _curUtter    = null;
+let _elapsedInt  = null;
+let _resumeInt   = null;
+let _rateDebounce = null;
+let _volDebounce  = null;
+
+// ──────────────────────────────────────────────
+// LOCAL STORAGE  (v3: blocks structure)
+// ──────────────────────────────────────────────
+const LS = 'ditto_v3';
+
+function lsSave() {
+  try {
+    localStorage.setItem(LS, JSON.stringify({
+      files: S.files.map(f => ({
+        id: f.id, name: f.name, size: f.size, date: f.date,
+        text: f.text, blocks: f.blocks, chunks: f.chunks, favorite: !!f.favorite,
+      })),
+      activeId:     S.activeId,
+      currentChunk: S.currentChunk,
+      rate:         S.rate,
+      volume:       S.volume,
+      voiceName:    S.selectedVoice ? S.selectedVoice.name : null,
+    }));
+  } catch(e) { /* storage full */ }
+}
+
+function lsLoad() {
+  try {
+    const d = JSON.parse(localStorage.getItem(LS) || 'null');
+    if (!d) return;
+    S.files         = d.files        || [];
+    S.activeId      = d.activeId     || null;
+    S.currentChunk  = d.currentChunk ?? -1;
+    S.rate          = d.rate         ?? 1.0;
+    S.volume        = d.volume       ?? 1.0;
+    S._pendingVoice = d.voiceName    || null;
+    const af = S.files.find(f => f.id === S.activeId);
+    if (af) { S.blocks = af.blocks || []; S.chunks = af.chunks || []; }
+    document.getElementById('speed-slider').value = S.rate;
+    document.getElementById('vol-slider').value   = S.volume;
+    setSpeedMini(S.rate);
+    refreshBadges();
+  } catch(e) {}
+}
+
+// ──────────────────────────────────────────────
+// TEXT PROCESSING
+// ──────────────────────────────────────────────
+
+function cleanRaw(raw) {
+  let t = raw
+    .replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+    .replace(/[ \t]{2,}/g, ' ')
+    .split('\n').map(l => l.trim()).join('\n')
+    // join soft-wrapped lines (no sentence-ending punct before break)
+    .replace(/([^\.\!\?\:\;\n—–])\n([A-Za-zÀ-ÿ0-9\("])/g, '$1 $2')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+
+  // Fix glyph-spacing artefacts: chains of single-char fragments
+  // "c r i a r" → "criar" (safe: single chars in ≥3 chain = never valid prose)
+  let prev;
+  do {
+    prev = t;
+    t = t.replace(
+      /(?<!\w)([a-záàãâéêíóôõúüç]) ([a-záàãâéêíóôõúüç]) ([a-záàãâéêíóôõúüç])(?!\w)/g,
+      '$1$2$3'
+    );
+  } while (t !== prev);
+
+  return t;
+}
+
+/*
+ * classifyBlock: decides if a paragraph-level block is a title or body text.
+ *
+ * Heading signals (h1 = major, h2 = minor):
+ *   – Entirely uppercase + short → h1
+ *   – Starts with a known heading keyword → h2
+ *   – Short block with no terminal punctuation → h2
+ */
+function classifyBlock(text) {
+  const t     = text.trim();
+  const words = t.split(/\s+/).filter(Boolean);
+  const wc    = words.length;
+
+  // All-uppercase text (chapter title, "PREFÁCIO", "PRIMEIRA SECÇÃO", etc.)
+  const hasLetter = /[A-ZÁÀÃÂÉÊÍÓÔÕÚ]/.test(t);
+  const isAllUpper = hasLetter && (t.toUpperCase() === t);
+  if (isAllUpper && wc <= 14) return 'h1';
+
+  // Explicit heading keywords
+  const kwPat = /^(capítulo|chapter|parte|part|secção|seção|section|prefácio|preface|introdução|introduction|conclusão|conclusion|apêndice|prólogo|epílogo|sumário|posfácio|epígrafo)/i;
+  if (kwPat.test(t) && wc <= 16) return 'h2';
+
+  // Numbered / roman numeral headings: "I. Título", "1. Título", "§ 3"
+  const numPat = /^([IVXivx]+\.?\s+\S|[A-Z]?\d+\.?\s+[A-ZÁÀÃÂ]|§\s*\d)/;
+  if (numPat.test(t) && wc <= 14) return 'h2';
+
+  // Short block without terminal sentence punctuation → likely a standalone title
+  const hasTerminal = /[.!?…]$/.test(t);
+  if (!hasTerminal && wc <= 8 && t.length <= 80) return 'h2';
+
+  return 'p';
+}
+
+function splitSentences(para) {
+  // Capture text + terminal punctuation (including closing quotes/parens)
+  const re = /[^.!?…]+[.!?…]+['"»)\]]*\s*/g;
+  const matches = para.match(re) || [];
+  const sents   = matches.map(s => s.trim()).filter(s => s.length > 2);
+  // Trailing text without terminal punctuation
+  const rem = para.slice(matches.join('').length).trim();
+  if (rem.length > 2) sents.push(rem);
+  return sents.length ? sents : (para.trim().length > 2 ? [para.trim()] : []);
+}
+
+function buildBlocks(rawText) {
+  const cleaned  = cleanRaw(rawText);
+  const rawParas = cleaned
+    .split(/\n\n+/)
+    .map(p => p.replace(/\n/g, ' ').trim())
+    .filter(p => p.length > 2);
+
+  return rawParas
+    .map(p => {
+      const type      = classifyBlock(p);
+      const sentences = type === 'p' ? splitSentences(p) : [p.trim()];
+      return { type, sentences: sentences.filter(s => s.length > 1) };
+    })
+    .filter(b => b.sentences.length > 0);
+}
+
+// ──────────────────────────────────────────────
+// PDF LOADING
+// ──────────────────────────────────────────────
+async function loadPDF(file) {
+  loading(true);
+  try {
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    let full = '';
+
+    for (let pg = 1; pg <= pdf.numPages; pg++) {
+      const page = await pdf.getPage(pg);
+      const tc   = await page.getTextContent();
+      let pageText = '', lastY = null, lastEndX = 0, lastStr = '';
+
+      for (const item of tc.items) {
+        if (!('str' in item) || item.str === '') continue;
+        const x    = item.transform[4];
+        const y    = item.transform[5];
+        const size = Math.sqrt(item.transform[0] ** 2 + item.transform[1] ** 2) || 12;
+        const iw   = (typeof item.width === 'number' && item.width > 0)
+                       ? item.width : size * item.str.length * 0.55;
+
+        if (lastY !== null) {
+          const dy = lastY - y;
+          if (Math.abs(dy) > size * 1.3) {
+            // Line changed
+            pageText += dy > size * 2.8 ? '\n\n' : '\n';
+          } else {
+            // Same line: add space only if there is a real horizontal gap
+            const gap = x - lastEndX;
+            if (gap > size * 0.35) {
+              if (!lastStr.endsWith(' ') && !item.str.startsWith(' '))
+                pageText += ' ';
+            }
+            // gap ≤ threshold → items touch → same word, no space
+          }
+        }
+        pageText += item.str;
+        lastY    = y;
+        lastEndX = x + iw;
+        lastStr  = item.str;
+      }
+      full += pageText + '\n\n';
+    }
+
+    const blocks = buildBlocks(full);
+    const chunks = blocks.flatMap(b => b.sentences);
+
+    if (!chunks.length) {
+      toast('Nenhum texto encontrado. O PDF precisa ter texto selecionável.');
+      loading(false); return;
+    }
+
+    const entry = {
+      id:       Date.now().toString(),
+      name:     file.name.replace(/\.pdf$/i, ''),
+      size:     file.size,
+      date:     new Date().toLocaleDateString('pt-BR'),
+      text:     full,
+      blocks,
+      chunks,
+      favorite: false,
+    };
+    S.files.unshift(entry);
+    S.activeId     = entry.id;
+    S.blocks       = blocks;
+    S.chunks       = chunks;
+    S.currentChunk = -1;
+
+    lsSave(); renderAll();
+    toast(`PDF carregado — ${chunks.length} frases`);
+  } catch(err) {
+    console.error(err); toast('Erro ao processar o PDF.');
+  }
+  loading(false);
+}
+
+// ──────────────────────────────────────────────
+// VOICES
+// ──────────────────────────────────────────────
+function voiceScore(v) {
+  let s = 0;
+  const n = v.name.toLowerCase();
+  if (v.lang === 'pt-BR')           s += 100;
+  else if (v.lang.startsWith('pt')) s += 50;
+  if (n.includes('google'))         s += 40;
+  else if (n.includes('microsoft')) s += 30;
+  return s;
+}
+
+function loadVoices() {
+  const all = window.speechSynthesis.getVoices();
+  if (!all.length) return;
+  S.voices = [...all].sort((a, b) => voiceScore(b) - voiceScore(a));
+  renderVoiceSelect();
+  if (S._pendingVoice) {
+    const found = S.voices.find(v => v.name === S._pendingVoice);
+    if (found) S.selectedVoice = found;
+    S._pendingVoice = null;
+  }
+  if (!S.selectedVoice && S.voices.length) S.selectedVoice = S.voices[0];
+  if (S.selectedVoice)
+    document.getElementById('voice-select').value = S.selectedVoice.name;
+}
+
+function renderVoiceSelect() {
+  const sel = document.getElementById('voice-select');
+  sel.innerHTML = '';
+  S.voices.forEach(v => {
+    const o = document.createElement('option');
+    o.value = v.name; o.textContent = `${v.name} (${v.lang})`;
+    sel.appendChild(o);
+  });
+}
+
+function setVoice(name) {
+  S.selectedVoice = S.voices.find(v => v.name === name) || S.voices[0];
+  lsSave();
+}
+
+// ──────────────────────────────────────────────
+// SPEECH
+// ──────────────────────────────────────────────
+function togglePlay() {
+  if (!S.chunks.length) return;
+  if (S.isSpeaking && !S.isPaused) pauseSpeech();
+  else if (S.isPaused)             resumeSpeech();
+  else startFrom(S.currentChunk < 0 ? 0 : S.currentChunk);
+}
+
+function startFrom(idx) {
+  stopSpeech();
+  S.currentChunk = idx;
+  speakChunk(idx);
+}
+
+function speakChunk(idx) {
+  if (idx < 0 || idx >= S.chunks.length) { stopSpeech(); return; }
+  const text = (S.chunks[idx] || '').trim();
+  if (!text) { speakChunk(idx + 1); return; }
+
+  const u = new SpeechSynthesisUtterance(text);
+  if (S.selectedVoice) u.voice = S.selectedVoice;
+  u.rate   = Math.max(0.1, S.rate);
+  u.volume = S.volume;
+  u.pitch  = 1;
+
+  u.onstart = () => {
+    S.isSpeaking = true; S.isPaused = false;
+    S.currentChunk = idx;
+    startElapsed(); startResumeWorkaround();
+    updateUI(); highlightChunk(idx); lsSave();
+  };
+  u.onend   = () => { if (!S.isPaused) speakChunk(idx + 1); };
+  u.onerror = e  => {
+    if (e.error !== 'interrupted' && e.error !== 'canceled') speakChunk(idx + 1);
+  };
+
+  _curUtter = u;
+  window.speechSynthesis.speak(u);
+  S.isSpeaking = true;
+  updateUI();
+}
+
+function pauseSpeech() {
+  window.speechSynthesis.pause();
+  S.isPaused = true;
+  stopResumeWorkaround(); stopElapsed(); updateUI();
+}
+
+function resumeSpeech() {
+  window.speechSynthesis.resume();
+  S.isPaused = false;
+  startElapsed(); startResumeWorkaround(); updateUI();
+}
+
+function stopSpeech() {
+  window.speechSynthesis.cancel();
+  S.isSpeaking = false; S.isPaused = false; _curUtter = null;
+  stopResumeWorkaround(); stopElapsed();
+  S.elapsedSec = 0;
+  updateUI(); unhighlightAll();
+  document.getElementById('pb-elapsed').textContent = '0:00';
+}
+
+/*
+ * restartCurrentChunk: cancel + re-speak the same index without touching
+ * the elapsed timer. Used when rate or volume changes mid-sentence.
+ */
+function restartCurrentChunk() {
+  const cur = S.currentChunk;
+  window.speechSynthesis.cancel();
+  stopResumeWorkaround();
+  S.isSpeaking = false; S.isPaused = false; _curUtter = null;
+  // Keep elapsed running — don't reset elapsedSec
+  setTimeout(() => speakChunk(cur), 60);
+}
+
+function prevChunk() { startFrom(Math.max(0, S.currentChunk - 1)); }
+function nextChunk() { startFrom(Math.min(S.chunks.length - 1, S.currentChunk + 1)); }
+
+function setRate(r) {
+  S.rate = r;
+  document.getElementById('speed-slider').value = r;
+  setSpeedMini(r);
+  refreshBadges();
+  // Debounce restart so slider drag doesn't stutter
+  clearTimeout(_rateDebounce);
+  _rateDebounce = setTimeout(() => {
+    if (S.isSpeaking && !S.isPaused) restartCurrentChunk();
+  }, 160);
+  lsSave();
+}
+
+function setVolume(v) {
+  S.volume = v;
+  document.getElementById('vol-slider').value = v;
+  refreshBadges();
+  /*
+   * Volume change while speaking: restart current chunk after a short debounce.
+   * The Web Speech API does not expose a live volume handle — the only way to
+   * hear an immediate change is to re-issue the utterance with the new value.
+   * 150 ms debounce = feels instant, avoids thrashing while dragging the slider.
+   */
+  clearTimeout(_volDebounce);
+  _volDebounce = setTimeout(() => {
+    if (S.isSpeaking && !S.isPaused) restartCurrentChunk();
+  }, 150);
+  lsSave();
+}
+
+// Chrome 15-s TTS stall workaround
+function startResumeWorkaround() {
+  stopResumeWorkaround();
+  _resumeInt = setInterval(() => {
+    if (S.isSpeaking && !S.isPaused && window.speechSynthesis.speaking) {
+      window.speechSynthesis.pause();
+      window.speechSynthesis.resume();
+    }
+  }, 10000);
+}
+function stopResumeWorkaround() { clearInterval(_resumeInt); _resumeInt = null; }
+
+// ──────────────────────────────────────────────
+// ELAPSED TIMER
+// ──────────────────────────────────────────────
+function startElapsed() {
+  stopElapsed();
+  _elapsedInt = setInterval(() => {
+    S.elapsedSec++;
+    const m = Math.floor(S.elapsedSec / 60);
+    const s = S.elapsedSec % 60;
+    document.getElementById('pb-elapsed').textContent = `${m}:${String(s).padStart(2,'0')}`;
+  }, 1000);
+}
+function stopElapsed() { clearInterval(_elapsedInt); _elapsedInt = null; }
+
+// ──────────────────────────────────────────────
+// HIGHLIGHT
+// ──────────────────────────────────────────────
+function highlightChunk(idx) {
+  unhighlightAll();
+  const el = document.querySelector(`.sentence[data-idx="${idx}"]`);
+  if (el) {
+    el.classList.add('active');
+    if (document.getElementById('autoscroll').checked)
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  document.getElementById('pb-progress').textContent = `${idx + 1} / ${S.chunks.length}`;
+}
+function unhighlightAll() {
+  document.querySelectorAll('.sentence.active').forEach(el => el.classList.remove('active'));
+}
+
+// ──────────────────────────────────────────────
+// RENDER
+// ──────────────────────────────────────────────
+function renderAll() {
+  renderSidebar(); renderContent(); updateStats(); renderWaveform(); updateUI();
+}
+
+function renderSidebar() {
+  const wrap = document.getElementById('sb-files');
+  wrap.innerHTML = '';
+  if (!S.files.length) {
+    wrap.innerHTML = '<div class="no-files">Nenhum arquivo ainda.<br>Importe um PDF para começar.</div>';
+    return;
+  }
+  const groups = {};
+  S.files.forEach(f => { (groups[f.date] || (groups[f.date] = [])).push(f); });
+  const today = new Date().toLocaleDateString('pt-BR');
+  const yday  = (() => { const d = new Date(); d.setDate(d.getDate()-1); return d.toLocaleDateString('pt-BR'); })();
+  Object.keys(groups).forEach(date => {
+    const g = document.createElement('div');
+    g.className = 'date-group';
+    g.innerHTML = `<div class="date-label">${date === today ? 'Hoje' : date === yday ? 'Ontem' : date}</div>`;
+    groups[date].forEach(f => g.appendChild(buildFileItem(f)));
+    wrap.appendChild(g);
+  });
+}
+
+function buildFileItem(f) {
+  const el = document.createElement('div');
+  el.className = `file-item${f.id === S.activeId ? ' active' : ''}`;
+  el.innerHTML = `
+    <div class="file-icon">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+    </div>
+    <div class="file-info">
+      <div class="file-name">${esc(f.name)}${f.favorite ? ' ★' : ''}</div>
+      <div class="file-meta">${(f.chunks||[]).length} fr. · ${fmtSize(f.size)}</div>
+    </div>
+    <button class="file-menu-btn" title="Opções">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+        <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+      </svg>
+    </button>`;
+  el.addEventListener('click', e => {
+    if (e.target.closest('.file-menu-btn')) { showCtxMenu(e, f.id); return; }
+    loadFile(f.id);
+  });
+  el.querySelector('.file-menu-btn').addEventListener('click', e => {
+    e.stopPropagation(); showCtxMenu(e, f.id);
+  });
+  return el;
+}
+
+/*
+ * renderContent: renders the active file as structured prose.
+ *
+ * Block types:
+ *   h1  → <h1 class="prose-h1">  (chapter titles, ALL-CAPS headings)
+ *   h2  → <h2 class="prose-h2">  (section titles, prefácio, etc.)
+ *   p   → <p  class="prose-p">   (body paragraphs)
+ *
+ * Every sentence inside each block is wrapped in a <span class="sentence">
+ * so it can be clicked to start reading from that point and highlighted
+ * while being read.
+ */
+function renderContent() {
+  const active = S.files.find(f => f.id === S.activeId);
+  const hdr    = document.getElementById('content-header');
+  const wrap   = document.getElementById('upload-wrap');
+  const secs   = document.getElementById('text-sections');
+  const bb     = document.getElementById('bottom-bar');
+
+  if (!active) {
+    hdr.style.display  = 'none'; wrap.style.display = 'flex';
+    secs.style.display = 'none'; bb.style.display   = 'none';
+    return;
+  }
+
+  hdr.style.display  = 'block'; wrap.style.display = 'none';
+  secs.style.display = 'block'; bb.style.display   = 'flex';
+
+  document.getElementById('doc-title').textContent = active.name;
+  document.getElementById('doc-meta').textContent  =
+    `${(active.chunks||[]).length} frases · ${fmtSize(active.size)} · ${active.date}`;
+  document.getElementById('fav-label').textContent =
+    active.favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos';
+
+  secs.innerHTML = '';
+  const body = document.createElement('div');
+  body.className = 'prose-body';
+
+  let gIdx = 0;
+  (active.blocks || []).forEach(block => {
+    const tagName = block.type === 'h1' ? 'h1'
+                  : block.type === 'h2' ? 'h2'
+                  : 'p';
+    const el = document.createElement(tagName);
+    el.className = `prose-${tagName}`;
+
+    block.sentences.forEach(sent => {
+      const idx  = gIdx++;
+      const span = document.createElement('span');
+      span.className   = 'sentence';
+      span.dataset.idx = idx;
+      span.textContent = sent;
+      if (idx === S.currentChunk) span.classList.add('active');
+      span.addEventListener('click', () => startFrom(idx));
+      el.appendChild(span);
+      // Add natural inter-sentence space for body paragraphs
+      if (tagName === 'p') el.appendChild(document.createTextNode(' '));
+    });
+    body.appendChild(el);
+  });
+
+  secs.appendChild(body);
+  document.getElementById('pb-progress').textContent =
+    S.currentChunk >= 0 ? `${S.currentChunk + 1} / ${S.chunks.length}` : `0 / ${S.chunks.length}`;
+}
+
+function renderWaveform() {
+  const w = document.getElementById('waveform');
+  w.innerHTML = '';
+  for (let i = 0; i < 52; i++) {
+    const b = document.createElement('div');
+    b.className = 'w-bar';
+    b.style.height = `${3 + Math.random() * 20}px`;
+    w.appendChild(b);
+  }
+}
+
+function updateUI() {
+  const playing = S.isSpeaking && !S.isPaused;
+  document.getElementById('icon-play').style.display  = playing ? 'none'  : 'block';
+  document.getElementById('icon-pause').style.display = playing ? 'block' : 'none';
+  document.getElementById('btn-stop').disabled = !S.isSpeaking && !S.isPaused;
+  document.getElementById('waveform').classList.toggle('playing', playing);
+}
+
+function updateStats() {
+  const af = S.files.find(f => f.id === S.activeId);
+  if (!af) {
+    ['st-sents','st-words','st-chars','st-time'].forEach(id =>
+      document.getElementById(id).textContent = '—');
+    return;
+  }
+  const text  = af.text || '';
+  const words = text.split(/\s+/).filter(Boolean).length;
+  const chars = text.length;
+  const mins  = Math.round(words / (130 * Math.max(0.1, S.rate))) || 1;
+  document.getElementById('st-sents').textContent = (af.chunks||[]).length;
+  document.getElementById('st-words').textContent = words > 999 ? `${(words/1000).toFixed(1)}k` : words;
+  document.getElementById('st-chars').textContent = chars > 999 ? `${(chars/1000).toFixed(1)}k` : chars;
+  document.getElementById('st-time').textContent  = `~${mins}m`;
+}
+
+// ──────────────────────────────────────────────
+// FILE MANAGEMENT
+// ──────────────────────────────────────────────
+function loadFile(id) {
+  const f = S.files.find(f => f.id === id);
+  if (!f) return;
+  stopSpeech();
+  S.activeId     = id;
+  S.blocks       = f.blocks || [];
+  S.chunks       = f.chunks || [];
+  S.currentChunk = -1;
+  lsSave(); renderAll();
+}
+function deleteActiveFile() { if (S.activeId) deleteFile(S.activeId); }
+function deleteFile(id) {
+  if (!confirm('Remover este arquivo da lista?')) return;
+  S.files = S.files.filter(f => f.id !== id);
+  if (S.activeId === id) {
+    stopSpeech();
+    const nf = S.files[0];
+    S.activeId = nf?.id || null; S.blocks = nf?.blocks || []; S.chunks = nf?.chunks || [];
+    S.currentChunk = -1;
+  }
+  lsSave(); renderAll(); toast('Arquivo removido');
+}
+function toggleFavorite() {
+  const f = S.files.find(f => f.id === S.activeId);
+  if (!f) return;
+  f.favorite = !f.favorite;
+  lsSave(); renderAll(); toast(f.favorite ? '★ Adicionado aos favoritos' : 'Removido dos favoritos');
+}
+function copyText() {
+  const f = S.files.find(f => f.id === S.activeId);
+  if (!f) return;
+  navigator.clipboard.writeText(f.text || '')
+    .then(() => toast('Texto copiado!')).catch(() => toast('Não foi possível copiar.'));
+}
+function renameActive() {
+  const f = S.files.find(f => f.id === S.activeId);
+  if (!f) return;
+  const n = prompt('Novo nome:', f.name);
+  if (n && n.trim()) { f.name = n.trim(); lsSave(); renderAll(); }
+}
+
+// ──────────────────────────────────────────────
+// CONTEXT MENU
+// ──────────────────────────────────────────────
+function showCtxMenu(e, fid) {
+  e.preventDefault(); e.stopPropagation();
+  _ctxFileId = fid;
+  const m = document.getElementById('ctx-menu');
+  m.classList.add('open');
+  m.style.left = `${Math.min(e.clientX, window.innerWidth  - 175)}px`;
+  m.style.top  = `${Math.min(e.clientY, window.innerHeight - 180)}px`;
+}
+function ctxAction(act) {
+  document.getElementById('ctx-menu').classList.remove('open');
+  const id = _ctxFileId; _ctxFileId = null;
+  if (!id) return;
+  const f = S.files.find(f => f.id === id);
+  if (!f) return;
+  switch(act) {
+    case 'open':    loadFile(id); break;
+    case 'favorite':
+      f.favorite = !f.favorite; lsSave(); renderAll();
+      toast(f.favorite ? '★ Favoritado' : 'Desfavoritado'); break;
+    case 'rename': {
+      const n = prompt('Novo nome:', f.name);
+      if (n?.trim()) { f.name = n.trim(); lsSave(); renderAll(); }
+      break;
+    }
+    case 'delete': deleteFile(id); break;
+  }
+}
+
+// ──────────────────────────────────────────────
+// HELPERS
+// ──────────────────────────────────────────────
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function fmtSize(b) {
+  if (!b) return '';
+  if (b < 1024)    return `${b}B`;
+  if (b < 1048576) return `${(b/1024).toFixed(0)}KB`;
+  return `${(b/1048576).toFixed(1)}MB`;
+}
+function loading(on) { document.getElementById('loading-overlay').style.display = on ? 'flex' : 'none'; }
+function toast(msg) {
+  const w = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg; w.appendChild(t);
+  setTimeout(() => { t.style.animation = 'toastOut .3s ease forwards'; setTimeout(() => t.remove(), 320); }, 2800);
+}
+function triggerUpload() { document.getElementById('file-input').click(); }
+function navClick(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+function refreshBadges() {
+  const r = S.rate;
+  const rL = r === 0 ? '0×' : Number.isInteger(r) ? `${r}×`
+    : `${r.toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}×`;
+  document.getElementById('speed-badge').textContent = rL;
+  document.getElementById('vol-badge').textContent   = `${Math.round(S.volume * 100)}%`;
+}
+function setSpeedMini(r) {
+  const opts = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+  document.getElementById('speed-mini').value =
+    opts.reduce((p, c) => Math.abs(c - r) < Math.abs(p - r) ? c : p);
+}
+
+// ──────────────────────────────────────────────
+// EVENTS
+// ──────────────────────────────────────────────
+document.getElementById('file-input').addEventListener('change', e => {
+  const f = e.target.files[0]; if (f) loadPDF(f); e.target.value = '';
+});
+const dz = document.getElementById('dropzone');
+dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', ()  => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f?.type === 'application/pdf') loadPDF(f); else toast('Use apenas arquivos PDF.');
+});
+document.getElementById('content-area').addEventListener('dragover', e => e.preventDefault());
+document.getElementById('content-area').addEventListener('drop', e => {
+  e.preventDefault();
+  const f = e.dataTransfer.files[0]; if (f?.type === 'application/pdf') loadPDF(f);
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('#ctx-menu')) document.getElementById('ctx-menu').classList.remove('open');
+});
+document.addEventListener('keydown', e => {
+  if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+  if      (e.code === 'Space')      { e.preventDefault(); togglePlay(); }
+  else if (e.code === 'ArrowLeft')  { e.preventDefault(); prevChunk(); }
+  else if (e.code === 'ArrowRight') { e.preventDefault(); nextChunk(); }
+  else if (e.code === 'Escape')     { stopSpeech(); }
+});
+window.speechSynthesis.onvoiceschanged = loadVoices;
+
+// ──────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────
+lsLoad();
+loadVoices();
+renderAll();
+refreshBadges();
+</script>
+</body>
+</html>
