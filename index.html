@@ -1094,48 +1094,226 @@ function buildBlocks(rawText) {
 }
 
 // ──────────────────────────────────────────────
-// PDF LOADING
+// PDF LOADING  ·  geometric 3-pass engine
+//
+// Pass 1 — cluster raw items into visual lines
+// Pass 2 — compute per-page statistics
+//          (body size, body font, left/right margins)
+// Pass 3 — apply 5 geometric rules to emit \n\n
+//          paragraph breaks into the output text
 // ──────────────────────────────────────────────
 async function loadPDF(file) {
   loading(true);
   try {
     const buf = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
-    let full = '';
+    let full  = '';
 
     for (let pg = 1; pg <= pdf.numPages; pg++) {
       const page = await pdf.getPage(pg);
       const tc   = await page.getTextContent();
-      let pageText = '', lastY = null, lastEndX = 0, lastStr = '';
 
-      for (const item of tc.items) {
-        if (!('str' in item) || item.str === '') continue;
-        const x    = item.transform[4];
-        const y    = item.transform[5];
-        const size = Math.sqrt(item.transform[0] ** 2 + item.transform[1] ** 2) || 12;
-        const iw   = (typeof item.width === 'number' && item.width > 0)
-                       ? item.width : size * item.str.length * 0.55;
-
-        if (lastY !== null) {
-          const dy = lastY - y;
-          if (Math.abs(dy) > size * 1.3) {
-            // Line changed
-            pageText += dy > size * 2.8 ? '\n\n' : '\n';
-          } else {
-            // Same line: add space only if there is a real horizontal gap
-            const gap = x - lastEndX;
-            if (gap > size * 0.35) {
-              if (!lastStr.endsWith(' ') && !item.str.startsWith(' '))
-                pageText += ' ';
-            }
-            // gap ≤ threshold → items touch → same word, no space
-          }
-        }
-        pageText += item.str;
-        lastY    = y;
-        lastEndX = x + iw;
-        lastStr  = item.str;
+      /* ── annotate raw items ──────────────────────────────── */
+      const raw = [];
+      for (const it of tc.items) {
+        if (!('str' in it) || !it.str) continue;
+        const x    = it.transform[4];
+        const y    = it.transform[5];
+        const size = Math.sqrt(it.transform[0] ** 2 + it.transform[1] ** 2) || 12;
+        const iw   = (typeof it.width === 'number' && it.width > 0)
+                       ? it.width : size * it.str.length * 0.55;
+        raw.push({ str: it.str, x, y, size, iw, font: it.fontName || '' });
       }
+      if (!raw.length) continue;
+
+      /* ════════════════════════════════════════════════════════
+         PASS 1 — cluster items into visual lines
+         Items whose Y coordinates are within (size × 0.4) of
+         the group's running centroid are merged together.
+         ════════════════════════════════════════════════════════ */
+      const groups = [];
+      for (const it of raw) {
+        const thr = Math.max(it.size * 0.4, 2.5);
+        const grp = groups.find(g => Math.abs(g.cy - it.y) < thr);
+        if (grp) {
+          grp.items.push(it);
+          // drift centroid toward new item
+          grp.cy += (it.y - grp.cy) / grp.items.length;
+        } else {
+          groups.push({ cy: it.y, items: [it] });
+        }
+      }
+      // sort top → bottom (largest PDF-Y = nearest top of page)
+      groups.sort((a, b) => b.cy - a.cy);
+
+      /* build line descriptors from each group */
+      const lines = groups.map(g => {
+        g.items.sort((a, b) => a.x - b.x);       // left → right
+        let text = '', lastEnd = null;
+        let minX = Infinity, maxEndX = -Infinity;
+        let sizeMass = 0, totalChars = 0;
+        const fonts = {};
+
+        for (const it of g.items) {
+          /* inter-item spacing within the same visual line */
+          if (lastEnd !== null) {
+            const gap = it.x - lastEnd;
+            if (gap > it.size * 0.35 &&
+                !text.endsWith(' ') && !it.str.startsWith(' '))
+              text += ' ';
+          }
+          text       += it.str;
+          minX        = Math.min(minX, it.x);
+          maxEndX     = Math.max(maxEndX, it.x + it.iw);
+          lastEnd     = it.x + it.iw;
+          sizeMass   += it.size * it.str.length;
+          totalChars += it.str.length;
+          fonts[it.font] = (fonts[it.font] || 0) + it.str.length;
+        }
+
+        const size = totalChars ? sizeMass / totalChars : g.items[0].size;
+        const font = Object.entries(fonts).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+        return { y: g.cy, text: text.trim(), minX, maxEndX, size, font };
+      }).filter(l => l.text.length > 0);
+
+      if (!lines.length) continue;
+
+      /* ════════════════════════════════════════════════════════
+         PASS 2 — per-page statistics
+         ════════════════════════════════════════════════════════ */
+
+      /* body size: size bucket with the most character weight  */
+      const szBkt = {};
+      for (const l of lines) {
+        const b = Math.round(l.size * 2) / 2;          // 0.5 pt resolution
+        szBkt[b] = (szBkt[b] || 0) + l.text.length;
+      }
+      const bodySize = +(Object.entries(szBkt)
+        .sort((a, b) => b[1] - a[1])[0]?.[0] ?? 12);
+
+      /* body font: most common font among body-sized lines     */
+      const fnBkt = {};
+      for (const l of lines) {
+        if (Math.abs(l.size - bodySize) <= bodySize * 0.18)
+          fnBkt[l.font] = (fnBkt[l.font] || 0) + l.text.length;
+      }
+      const bodyFont = Object.entries(fnBkt)
+        .sort((a, b) => b[1] - a[1])[0]?.[0] ?? '';
+
+      /* left margin: modal minX (3 pt grid) of body-sized lines */
+      const xBkt = {};
+      for (const l of lines) {
+        if (Math.abs(l.size - bodySize) <= bodySize * 0.18) {
+          const b = Math.round(l.minX / 3) * 3;
+          xBkt[b] = (xBkt[b] || 0) + 1;
+        }
+      }
+      const leftMargin = +(Object.entries(xBkt)
+        .sort((a, b) => b[1] - a[1])[0]?.[0]
+        ?? lines[0].minX);
+
+      /* right margin: 85th-percentile maxEndX of body-sized lines */
+      const endXs = lines
+        .filter(l => Math.abs(l.size - bodySize) <= bodySize * 0.18)
+        .map(l => l.maxEndX)
+        .sort((a, b) => a - b);
+      const rightMargin = endXs.length
+        ? endXs[Math.floor(endXs.length * 0.85)]
+        : lines.reduce((m, l) => Math.max(m, l.maxEndX), 0);
+
+      /* effective column width (floor: 5 × bodySize to stay sane) */
+      const colWidth = Math.max(rightMargin - leftMargin, bodySize * 5);
+
+      /* ════════════════════════════════════════════════════════
+         PASS 3 — geometric paragraph segmentation
+         Each rule appends \n\n when it fires; otherwise text
+         is joined with a space (or hyphen-merged when needed).
+         ════════════════════════════════════════════════════════ */
+      let pageText = '';
+      let prev     = null;
+
+      for (const line of lines) {
+        if (!line.text) continue;
+
+        /* first line of this page: no previous context */
+        if (prev === null) {
+          pageText += line.text;
+          prev = line;
+          continue;
+        }
+
+        /* dy is always positive: distance moving down the page  */
+        const dy    = prev.y - line.y;
+        /* lineH is the effective line-height reference value    */
+        const lineH = Math.max(prev.size, line.size, bodySize * 0.8);
+
+        /* ── RULE 5 — Typographic isolation ────────────────────
+         * Lines significantly larger or smaller than the body
+         * text body size are isolated into their own block so
+         * that classifyBlock() can later label them h1 / h2.
+         *
+         * Font-family changes on short lines (≤ 120 chars) are
+         * also isolated — they are likely bold section headers
+         * at the same nominal size.                              */
+        const biggerSize = line.size > bodySize * 1.15;
+        const smallerSz  = line.size < bodySize * 0.82;
+        const fontBreak  = line.font !== bodyFont && line.text.length <= 120;
+
+        if (biggerSize || smallerSz || fontBreak) {
+          pageText += '\n\n' + line.text;
+          prev = line; continue;
+        }
+
+        /* ── Sanity guard — overlapping / duplicate Y ───────────
+         * (can occur with multi-column bleed or rotated glyphs) */
+        if (dy < lineH * 0.3) {
+          if (!pageText.endsWith(' ') && !line.text.startsWith(' '))
+            pageText += ' ';
+          pageText += line.text;
+          prev = line; continue;
+        }
+
+        /* ── RULE 2 — Large vertical gap → paragraph break ─────
+         * If the gap between this line and the previous is more
+         * than 1.45× the line-height, the layout tool inserted
+         * explicit inter-paragraph spacing (block paragraph
+         * style with no indent).                                 */
+        if (dy > lineH * 1.45) {
+          pageText += '\n\n' + line.text;
+          prev = line; continue;
+        }
+
+        /* ── RULES 3 & 4 — applied within normal line spacing ── */
+
+        /* Rule 3 — first-line indent
+         * A new line that starts more than 0.7 em to the right
+         * of the established left margin signals an indented
+         * first line of a new paragraph.                         */
+        const isIndented = line.minX > leftMargin + lineH * 0.7;
+
+        /* Rule 4 — orphan / short previous line
+         * If the PREVIOUS line ended more than 22 % of the column
+         * width before the right margin, it was the last (short)
+         * line of a paragraph.  Whatever follows is new content. */
+        const prevShort  = prev.maxEndX < rightMargin - colWidth * 0.22;
+
+        if (isIndented || prevShort) {
+          pageText += '\n\n' + line.text;
+          prev = line; continue;
+        }
+
+        /* ── Soft join — same paragraph continuation ────────────
+         * If the previous line ended with a hyphen, the word was
+         * split across lines; remove the hyphen before merging.   */
+        if (pageText.endsWith('-')) {
+          pageText = pageText.slice(0, -1) + line.text;
+        } else {
+          pageText += ' ' + line.text;
+        }
+
+        prev = line;
+      }
+
       full += pageText + '\n\n';
     }
 
