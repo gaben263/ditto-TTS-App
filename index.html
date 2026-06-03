@@ -1044,6 +1044,7 @@ body {
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 <script>
 'use strict';
 
@@ -1079,13 +1080,29 @@ let _rateDebounce = null;
 let _volDebounce  = null;
 
 // ──────────────────────────────────────────────
+// WAKE LOCK  (evita que o celular durma durante a leitura)
+// ──────────────────────────────────────────────
+let _wakeLock = null;
+
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator)) return;
+  try {
+    _wakeLock = await navigator.wakeLock.request('screen');
+  } catch(e) { /* API negada ou não suportada */ }
+}
+
+function releaseWakeLock() {
+  if (_wakeLock) { _wakeLock.release().catch(() => {}); _wakeLock = null; }
+}
+
+// ──────────────────────────────────────────────
 // LOCAL STORAGE  (v3: blocks structure)
 // ──────────────────────────────────────────────
 const LS = 'ditto_v3';
 
-function lsSave() {
+async function lsSave() {
   try {
-    localStorage.setItem(LS, JSON.stringify({
+    await localforage.setItem(LS, {
       files: S.files.map(f => ({
         id: f.id, name: f.name, size: f.size, date: f.date,
         text: f.text, blocks: f.blocks, chunks: f.chunks, favorite: !!f.favorite,
@@ -1095,13 +1112,13 @@ function lsSave() {
       rate:         S.rate,
       volume:       S.volume,
       voiceName:    S.selectedVoice ? S.selectedVoice.name : null,
-    }));
+    });
   } catch(e) { /* storage full */ }
 }
 
-function lsLoad() {
+async function lsLoad() {
   try {
-    const d = JSON.parse(localStorage.getItem(LS) || 'null');
+    const d = await localforage.getItem(LS);
     if (!d) return;
     S.files         = d.files        || [];
     S.activeId      = d.activeId     || null;
@@ -1556,6 +1573,7 @@ function speakChunk(idx) {
     S.isSpeaking = true; S.isPaused = false;
     S.currentChunk = idx;
     startElapsed(); startResumeWorkaround();
+    requestWakeLock();
     updateUI(); highlightChunk(idx); lsSave();
   };
   u.onend   = () => { if (!S.isPaused) speakChunk(idx + 1); };
@@ -1572,7 +1590,7 @@ function speakChunk(idx) {
 function pauseSpeech() {
   window.speechSynthesis.pause();
   S.isPaused = true;
-  stopResumeWorkaround(); stopElapsed(); updateUI();
+  stopResumeWorkaround(); stopElapsed(); releaseWakeLock(); updateUI();
 }
 
 function resumeSpeech() {
@@ -1584,7 +1602,7 @@ function resumeSpeech() {
 function stopSpeech() {
   window.speechSynthesis.cancel();
   S.isSpeaking = false; S.isPaused = false; _curUtter = null;
-  stopResumeWorkaround(); stopElapsed();
+  stopResumeWorkaround(); stopElapsed(); releaseWakeLock();
   S.elapsedSec = 0;
   updateUI(); unhighlightAll();
   document.getElementById('pb-elapsed').textContent = '0:00';
@@ -2009,6 +2027,11 @@ document.addEventListener('keydown', e => {
   else if (e.code === 'Escape')     { stopSpeech(); }
 });
 window.speechSynthesis.onvoiceschanged = loadVoices;
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && S.isSpeaking && !S.isPaused) {
+    requestWakeLock();
+  }
+});
 
 // ──────────────────────────────────────────────
 // MOBILE — DRAWER
@@ -2167,10 +2190,12 @@ function updateMobileUI() {
 // ──────────────────────────────────────────────
 // INIT
 // ──────────────────────────────────────────────
-lsLoad();
-loadVoices();
-renderAll();
-refreshBadges();
+(async function initApp() {
+  await lsLoad();
+  loadVoices();
+  renderAll();
+  refreshBadges();
+})();
 </script>
 </body>
 </html>
