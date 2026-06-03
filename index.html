@@ -93,6 +93,12 @@ body {
 }
 .file-info { flex: 1; min-width: 0; }
 .file-name { font-size: 12px; font-weight: 500; color: rgba(255,255,255,.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-fav-star {
+  color: #F59E0B;
+  font-size: 11px; line-height: 1;
+  text-shadow: 0 0 6px rgba(245,158,11,.55);
+  flex-shrink: 0;
+}
 .file-meta { font-size: 10px; color: rgba(255,255,255,.32); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .file-menu-btn {
   opacity: 0; padding: 4px; border-radius: 4px;
@@ -383,17 +389,17 @@ body {
 #file-input { display: none; }
 
 /* ================================================================
-   RESPONSIVE — TABLET
+   RESPONSIVE — TABLET  (768 – 1024 px)
+   Keep the full sidebar text: hiding names behind icons is an
+   anti-pattern for document lists.  We just narrow both sidebars
+   so the reading area keeps enough space.
 ================================================================ */
 @media (max-width: 1024px) {
-  :root { --sb-w: 60px; --rp-w: 220px; }
-  .sb-section-title, .file-info, .date-label, .nav-item span { display: none; }
-  .nav-item { justify-content: center; padding: 10px; }
-  .sb-logo { justify-content: center; }
-  .file-item { justify-content: center; }
-  .file-menu-btn { display: none; }
-  .sb-bottom .nav-item { justify-content: center; }
+  :root { --sb-w: 200px; --rp-w: 220px; }
   .prose-body { padding: 24px 28px; }
+  /* Tighten nav-item padding slightly on smaller tablets */
+  .nav-item   { padding: 7px 9px; }
+  /* File names already have text-overflow: ellipsis — nothing extra needed */
 }
 
 /* ================================================================
@@ -441,7 +447,7 @@ body {
   border-radius: 22px 22px 0 0;
   box-shadow: 0 -6px 28px rgba(0,0,0,.14);
   z-index: 130;
-  height: 158px;
+  height: 162px;
   overflow: hidden;
   transition: height .35s cubic-bezier(.4,0,.2,1);
   will-change: height;
@@ -474,29 +480,72 @@ body {
 .mobile-bs.mbs-playing .mbs-wave-bar:nth-child(6) { animation-delay:.30s; }
 .mobile-bs.mbs-playing .mbs-wave-bar:nth-child(7) { animation-delay:.06s; }
 
+/* ── compact controls row ──────────────────────────────────── */
 .mbs-controls-row {
-  display: flex; align-items: center; justify-content: center;
-  gap: 22px; padding: 4px 0 8px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 2px 18px 8px;
 }
-.mbs-btn-circle {
-  width: 50px; height: 50px; border-radius: 50%;
-  border: 2px solid var(--border); background: var(--border-light);
-  color: var(--text-1); font-size: 13px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-family: inherit;
-  transition: background var(--ease), border-color var(--ease), color var(--ease);
-  flex-shrink: 0;
+
+/* central cluster: prev + play + next */
+.mbs-play-cluster {
+  display: flex; align-items: center; gap: 8px;
 }
-.mbs-btn-circle:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.mbs-btn-skip {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: none; background: none; color: var(--text-2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: color var(--ease), background var(--ease);
+}
+.mbs-btn-skip:hover { color: var(--accent); background: var(--hover-bg); }
 .mbs-btn-play-main {
-  width: 66px; height: 66px; border-radius: 50%;
+  width: 62px; height: 62px; border-radius: 50%;
   background: var(--accent); color: #fff; border: none;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; flex-shrink: 0;
   box-shadow: 0 6px 20px rgba(123,141,240,.45);
   transition: background var(--ease), transform var(--ease);
 }
-.mbs-btn-play-main:hover { background: var(--accent-dark); transform: scale(1.06); }
+.mbs-btn-play-main:hover  { background: var(--accent-dark); }
+.mbs-btn-play-main:active { transform: scale(0.95); }
+
+/* ── pill-button: invisible <select> over a styled face ────── *
+ * The face (visual) sits in normal flow; the <select> is an
+ * absolutely-positioned transparent overlay that captures taps
+ * and opens the native iOS wheel / Android modal — giving a
+ * 100% native picker experience behind a custom visual.        */
+.mbs-pill-wrap {
+  position: relative; width: 52px; height: 52px; flex-shrink: 0;
+}
+.mbs-pill-face {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: var(--border-light); border: 2px solid var(--border);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2px; pointer-events: none;
+  transition: background var(--ease), border-color var(--ease),
+              box-shadow var(--ease);
+}
+.mbs-pill-wrap:focus-within .mbs-pill-face {
+  background: var(--accent-light); border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(123,141,240,.18);
+}
+.mbs-pill-face svg { flex-shrink: 0; opacity: .6; }
+.mbs-pill-val {
+  font-size: 11px; font-weight: 700; line-height: 1;
+  color: var(--text-1); letter-spacing: -.2px;
+}
+/* the actual <select> — completely transparent, fills the pill */
+.mbs-pill-ovr {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  border: none; background: transparent;
+  /* prevent iOS auto-zoom on focus (needs font-size ≥ 16px) */
+  font-size: 16px;
+}
 
 .mbs-vol-row {
   display: flex; align-items: center; gap: 10px;
@@ -618,6 +667,19 @@ body {
   .toast-wrap    { right: 14px; bottom: 168px; }
   .prose-body    { padding: 18px 16px; }
   .prose-p       { font-size: 15px; }
+
+  /* ── Drawer cascade-reset ───────────────────────────────────────
+   * On screens ≤700px *both* tablet and mobile media-queries fire.
+   * These rules win over any tablet narrowing and guarantee every
+   * element inside the slide-in drawer is fully visible.          */
+  .sidebar-left .sb-section-title,
+  .sidebar-left .file-info,
+  .sidebar-left .date-label    { display: block; }
+  .sidebar-left .nav-item span { display: inline; }
+  .sidebar-left .nav-item      { justify-content: flex-start; padding: 8px 10px; }
+  .sidebar-left .sb-logo       { justify-content: flex-start; }
+  .sidebar-left .file-item     { justify-content: flex-start; }
+  .sidebar-left .file-menu-btn { display: block; }
 }
 </style>
 </head>
@@ -647,7 +709,7 @@ body {
   <aside class="sidebar-left">
     <div class="sb-logo"><span class="logo-text">ditto</span></div>
     <nav class="sb-nav">
-      <button class="nav-item active" onclick="navClick(this)">
+      <button class="nav-item active" data-view="all" onclick="navClick(this)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span>Home</span>
       </button>
@@ -655,11 +717,11 @@ body {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
         <span>Importar PDF</span>
       </button>
-      <button class="nav-item" onclick="navClick(this)">
+      <button class="nav-item" data-view="all" onclick="navClick(this)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         <span>Todos</span>
       </button>
-      <button class="nav-item" onclick="navClick(this)">
+      <button class="nav-item" data-view="favorites" onclick="navClick(this)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <span>Favoritos</span>
       </button>
@@ -838,17 +900,67 @@ body {
   </div>
 
   <div class="mbs-controls-row">
-    <button class="mbs-btn-circle" id="mbs-speed-btn" onclick="cycleSpeed()" title="Velocidade">1×</button>
-    <button class="mbs-btn-play-main" onclick="togglePlay()">
-      <svg id="mbs-icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      <svg id="mbs-icon-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-    </button>
-    <button class="mbs-btn-circle" onclick="mobileVoiceClick()" title="Voz">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-        <path d="M15.54 8.46a5 5 0 010 7.07"/>
-      </svg>
-    </button>
+
+    <!-- ── Speed pill (left) ─────────────────────────── -->
+    <div class="mbs-pill-wrap">
+      <div class="mbs-pill-face">
+        <span class="mbs-pill-val" id="mbs-speed-pill-val">1×</span>
+      </div>
+      <select class="mbs-pill-ovr" id="mbs-speed-select"
+              onchange="setRate(parseFloat(this.value))">
+        <option value="0.5">0.5×</option>
+        <option value="0.75">0.75×</option>
+        <option value="1" selected>1×</option>
+        <option value="1.25">1.25×</option>
+        <option value="1.5">1.5×</option>
+        <option value="1.75">1.75×</option>
+        <option value="2">2×</option>
+      </select>
+    </div>
+
+    <!-- ── Central cluster: prev · play · next ─────── -->
+    <div class="mbs-play-cluster">
+      <button class="mbs-btn-skip" onclick="prevChunk()" title="Anterior">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5">
+          <polygon points="19 20 9 12 19 4 19 20"/>
+          <line x1="5" y1="19" x2="5" y2="5"/>
+        </svg>
+      </button>
+      <button class="mbs-btn-play-main" onclick="togglePlay()">
+        <svg id="mbs-icon-play" width="24" height="24" viewBox="0 0 24 24"
+             fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg id="mbs-icon-pause" width="24" height="24" viewBox="0 0 24 24"
+             fill="currentColor" style="display:none">
+          <rect x="6" y="4" width="4" height="16"/>
+          <rect x="14" y="4" width="4" height="16"/>
+        </svg>
+      </button>
+      <button class="mbs-btn-skip" onclick="nextChunk()" title="Próximo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5">
+          <polygon points="5 4 15 12 5 20 5 4"/>
+          <line x1="19" y1="5" x2="19" y2="19"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ── Voice pill (right) ────────────────────────── -->
+    <div class="mbs-pill-wrap">
+      <div class="mbs-pill-face">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 010 7.07"/>
+        </svg>
+        <span class="mbs-pill-val" id="mbs-voice-pill-val">Voz</span>
+      </div>
+      <select class="mbs-pill-ovr" id="mbs-voice-select"
+              onchange="setVoice(this.value)">
+        <option>Carregando…</option>
+      </select>
+    </div>
+
   </div>
 
   <div class="mbs-vol-row">
@@ -879,7 +991,7 @@ body {
     </div>
 
     <div class="mbs-sec-title">Voz</div>
-    <select class="mbs-voice-select" id="mbs-voice-select" onchange="setVoice(this.value)">
+    <select class="mbs-voice-select" id="mbs-voice-select-x" onchange="setVoice(this.value)">
       <option>Carregando vozes…</option>
     </select>
 
@@ -956,6 +1068,7 @@ const S = {
   volume:        1.0,
   _pendingVoice: null,
   elapsedSec:    0,
+  filterView:    'all',  // 'all' | 'favorites'
 };
 
 let _ctxFileId   = null;
@@ -1373,25 +1486,42 @@ function loadVoices() {
     S._pendingVoice = null;
   }
   if (!S.selectedVoice && S.voices.length) S.selectedVoice = S.voices[0];
-  if (S.selectedVoice)
-    document.getElementById('voice-select').value = S.selectedVoice.name;
+  if (S.selectedVoice) {
+    // sync all selects + mobile pill label
+    ['voice-select','mbs-voice-select','mbs-voice-select-x'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = S.selectedVoice.name;
+    });
+    const vpl = document.getElementById('mbs-voice-pill-val');
+    if (vpl) vpl.textContent = getVoiceAbbr(S.selectedVoice);
+  }
 }
 
 function renderVoiceSelect() {
-  const sel  = document.getElementById('voice-select');
-  const msel = document.getElementById('mbs-voice-select');
-  sel.innerHTML = '';
-  if (msel) msel.innerHTML = '';
+  const targets = [
+    document.getElementById('voice-select'),       // desktop
+    document.getElementById('mbs-voice-select'),   // compact pill
+    document.getElementById('mbs-voice-select-x'), // expanded area
+  ].filter(Boolean);
+
+  targets.forEach(sel => { sel.innerHTML = ''; });
   S.voices.forEach(v => {
     const o = document.createElement('option');
     o.value = v.name; o.textContent = `${v.name} (${v.lang})`;
-    sel.appendChild(o);
-    if (msel) msel.appendChild(o.cloneNode(true));
+    targets.forEach(sel => sel.appendChild(o.cloneNode(true)));
   });
 }
 
 function setVoice(name) {
   S.selectedVoice = S.voices.find(v => v.name === name) || S.voices[0];
+  // keep all voice selects in sync
+  ['voice-select', 'mbs-voice-select', 'mbs-voice-select-x'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && S.selectedVoice) el.value = S.selectedVoice.name;
+  });
+  // update compact pill label
+  const vpl = document.getElementById('mbs-voice-pill-val');
+  if (vpl) vpl.textContent = getVoiceAbbr(S.selectedVoice);
   lsSave();
 }
 
@@ -1557,14 +1687,26 @@ function renderAll() {
 }
 
 function renderSidebar() {
-  const wrap = document.getElementById('sb-files');
+  const wrap    = document.getElementById('sb-files');
+  const isFavs  = S.filterView === 'favorites';
   wrap.innerHTML = '';
-  if (!S.files.length) {
-    wrap.innerHTML = '<div class="no-files">Nenhum arquivo ainda.<br>Importe um PDF para começar.</div>';
+
+  // Keep section title in sync with the active view
+  const titleEl = document.querySelector('.sb-section-title');
+  if (titleEl) titleEl.textContent = isFavs ? 'Favoritos' : 'Arquivos';
+
+  // Apply filter — 'favorites' shows only starred files
+  const visible = isFavs ? S.files.filter(f => f.favorite) : S.files;
+
+  if (!visible.length) {
+    wrap.innerHTML = isFavs
+      ? '<div class="no-files">Nenhum favorito ainda.<br>Toque em ★ num arquivo para salvá-lo aqui.</div>'
+      : '<div class="no-files">Nenhum arquivo ainda.<br>Importe um PDF para começar.</div>';
     return;
   }
+
   const groups = {};
-  S.files.forEach(f => { (groups[f.date] || (groups[f.date] = [])).push(f); });
+  visible.forEach(f => { (groups[f.date] || (groups[f.date] = [])).push(f); });
   const today = new Date().toLocaleDateString('pt-BR');
   const yday  = (() => { const d = new Date(); d.setDate(d.getDate()-1); return d.toLocaleDateString('pt-BR'); })();
   Object.keys(groups).forEach(date => {
@@ -1587,9 +1729,10 @@ function buildFileItem(f) {
       </svg>
     </div>
     <div class="file-info">
-      <div class="file-name">${esc(f.name)}${f.favorite ? ' ★' : ''}</div>
+      <div class="file-name">${esc(f.name)}</div>
       <div class="file-meta">${(f.chunks||[]).length} fr. · ${fmtSize(f.size)}</div>
     </div>
+    ${f.favorite ? '<span class="file-fav-star" title="Favorito">★</span>' : ''}
     <button class="file-menu-btn" title="Opções">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
         <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
@@ -1816,6 +1959,11 @@ function triggerUpload() { document.getElementById('file-input').click(); }
 function navClick(el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
+  const view = el.dataset.view;
+  if (view && view !== S.filterView) {
+    S.filterView = view;
+    renderSidebar();
+  }
 }
 function refreshBadges() {
   const r = S.rate;
@@ -1932,6 +2080,30 @@ function mobileVoiceClick() {
 }
 
 // ──────────────────────────────────────────────
+// MOBILE — HELPERS
+// ──────────────────────────────────────────────
+
+/*
+ * getVoiceAbbr: 2-char language region code shown inside the voice pill.
+ * "pt-BR" → "BR"  |  "en-US" → "EN"  |  "pt" → "PT"  |  null → "Voz"
+ */
+function getVoiceAbbr(voice) {
+  if (!voice) return 'Voz';
+  const parts = (voice.lang || '').split('-');
+  return (parts[1] || parts[0] || 'Voz').toUpperCase().slice(0, 2);
+}
+
+/*
+ * fmtRate: canonical display string for a playback rate.
+ * 1  → "1×"   |  1.25 → "1.25×"  |  0.75 → "0.75×"
+ */
+function fmtRate(r) {
+  return Number.isInteger(r)
+    ? `${r}×`
+    : `${r.toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}×`;
+}
+
+// ──────────────────────────────────────────────
 // MOBILE — UI SYNC
 // ──────────────────────────────────────────────
 function updateMobileUI() {
@@ -1939,35 +2111,53 @@ function updateMobileUI() {
   if (!bs) return;
   const playing = S.isSpeaking && !S.isPaused;
 
-  // play/pause icons
+  /* play/pause icons */
   const ip = document.getElementById('mbs-icon-play');
   const iu = document.getElementById('mbs-icon-pause');
   if (ip) ip.style.display = playing ? 'none'  : 'block';
   if (iu) iu.style.display = playing ? 'block' : 'none';
 
-  // wave animation
+  /* wave animation */
   bs.classList.toggle('mbs-playing', playing);
 
-  // stop button
+  /* stop button (expanded area) */
   const stopM = document.getElementById('mbs-btn-stop-m');
   if (stopM) stopM.disabled = !S.isSpeaking && !S.isPaused;
 
-  // speed labels
-  const r  = S.rate;
-  const rL = Number.isInteger(r) ? `${r}×`
-    : `${r.toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}×`;
-  const sb2 = document.getElementById('mbs-speed-btn');  if (sb2) sb2.textContent = rL;
-  const sb3 = document.getElementById('mbs-speed-badge'); if (sb3) sb3.textContent = rL;
+  /* ── speed pill ─────────────────────────────── */
+  const rL = fmtRate(S.rate);
 
-  // sliders
-  const vs = document.getElementById('mbs-vol-slider');   if (vs) vs.value = S.volume;
-  const ss = document.getElementById('mbs-speed-slider'); if (ss) ss.value = S.rate;
+  // pill face label
+  const spl = document.getElementById('mbs-speed-pill-val');
+  if (spl) spl.textContent = rL;
 
-  // voice select
-  const vsel = document.getElementById('mbs-voice-select');
-  if (vsel && S.selectedVoice) vsel.value = S.selectedVoice.name;
+  // compact overlay select
+  const css = document.getElementById('mbs-speed-select');
+  if (css) {
+    const nearest = [0.5,0.75,1,1.25,1.5,1.75,2]
+      .reduce((p, c) => Math.abs(c - S.rate) < Math.abs(p - S.rate) ? c : p);
+    css.value = nearest;
+  }
 
-  // progress text
+  // expanded badge + slider
+  const sb3 = document.getElementById('mbs-speed-badge');  if (sb3) sb3.textContent = rL;
+  const ss  = document.getElementById('mbs-speed-slider'); if (ss)  ss.value = S.rate;
+
+  /* ── voice pill ─────────────────────────────── */
+  const vpl = document.getElementById('mbs-voice-pill-val');
+  if (vpl) vpl.textContent = getVoiceAbbr(S.selectedVoice);
+
+  // compact overlay select + expanded select
+  ['mbs-voice-select', 'mbs-voice-select-x'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && S.selectedVoice) el.value = S.selectedVoice.name;
+  });
+
+  /* ── volume slider ──────────────────────────── */
+  const vs = document.getElementById('mbs-vol-slider');
+  if (vs) vs.value = S.volume;
+
+  /* ── progress text ──────────────────────────── */
   const prog = document.getElementById('mbs-prog-text');
   if (prog) prog.textContent = S.chunks.length
     ? `${S.currentChunk >= 0 ? S.currentChunk + 1 : 0} / ${S.chunks.length}`
