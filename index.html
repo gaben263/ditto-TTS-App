@@ -397,18 +397,227 @@ body {
 }
 
 /* ================================================================
+   MOBILE HEADER
+================================================================ */
+.mobile-header {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; height: 56px;
+  z-index: 150; background: var(--sb-bg);
+  align-items: center; justify-content: space-between;
+  padding: 0 12px;
+}
+.mh-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.75); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--ease); flex-shrink: 0;
+}
+.mh-btn:hover { background: rgba(255,255,255,.16); }
+.mh-logo {
+  font-family: 'Fredoka One', cursive; font-size: 26px;
+  color: var(--accent); text-shadow: 0 0 30px rgba(123,141,240,.5);
+  letter-spacing: -0.5px;
+}
+
+/* ================================================================
+   DRAWER OVERLAY
+================================================================ */
+.drawer-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.52);
+  z-index: 160; display: none;
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+.drawer-overlay.open { display: block; }
+
+/* ================================================================
+   MOBILE BOTTOM SHEET
+================================================================ */
+.mobile-bs {
+  display: none;
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: var(--panel-bg);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -6px 28px rgba(0,0,0,.14);
+  z-index: 130;
+  height: 158px;
+  overflow: hidden;
+  transition: height .35s cubic-bezier(.4,0,.2,1);
+  will-change: height;
+}
+.mobile-bs.mbs-expanded { height: 82vh; }
+
+.mbs-handle {
+  display: flex; flex-direction: column;
+  align-items: center; padding: 10px 0 2px;
+  cursor: pointer; user-select: none;
+}
+.mbs-drag-pill {
+  width: 38px; height: 4px; border-radius: 2px;
+  background: var(--border); margin-bottom: 8px;
+}
+.mbs-wave {
+  display: flex; align-items: flex-end; gap: 3px; height: 20px;
+}
+.mbs-wave-bar {
+  width: 3px; border-radius: 2px;
+  background: var(--accent); opacity: .5; height: 6px;
+}
+@keyframes mbsWave { 0%,100%{height:3px} 50%{height:17px} }
+.mobile-bs.mbs-playing .mbs-wave-bar { animation: mbsWave .9s ease-in-out infinite; }
+.mobile-bs.mbs-playing .mbs-wave-bar:nth-child(1) { animation-delay:.00s; }
+.mobile-bs.mbs-playing .mbs-wave-bar:nth-child(2) { animation-delay:.12s; }
+.mobile-bs.mbs-playing .mbs-wave-bar:nth-child(3) { animation-delay:.24s; }
+.mobile-bs.mbs-playing .mbs-wave-bar:nth-child(4) { animation-delay:.08s; }
+.mobile-bs.mbs-playing .mbs-wave-bar:nth-child(5) { animation-delay:.20s; }
+.mobile-bs.mbs-playing .mbs-wave-bar:nth-child(6) { animation-delay:.30s; }
+.mobile-bs.mbs-playing .mbs-wave-bar:nth-child(7) { animation-delay:.06s; }
+
+.mbs-controls-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 22px; padding: 4px 0 8px;
+}
+.mbs-btn-circle {
+  width: 50px; height: 50px; border-radius: 50%;
+  border: 2px solid var(--border); background: var(--border-light);
+  color: var(--text-1); font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-family: inherit;
+  transition: background var(--ease), border-color var(--ease), color var(--ease);
+  flex-shrink: 0;
+}
+.mbs-btn-circle:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.mbs-btn-play-main {
+  width: 66px; height: 66px; border-radius: 50%;
+  background: var(--accent); color: #fff; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  box-shadow: 0 6px 20px rgba(123,141,240,.45);
+  transition: background var(--ease), transform var(--ease);
+}
+.mbs-btn-play-main:hover { background: var(--accent-dark); transform: scale(1.06); }
+
+.mbs-vol-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 24px 12px; color: var(--text-3);
+}
+.mbs-vol-slider {
+  flex: 1; -webkit-appearance: none;
+  height: 4px; border-radius: 2px;
+  background: var(--border); outline: none; cursor: pointer;
+}
+.mbs-vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(123,141,240,.2);
+}
+
+/* expanded area */
+.mbs-expanded-area {
+  overflow-y: auto; padding: 0 20px 32px;
+  height: calc(82vh - 162px);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease .12s;
+}
+.mobile-bs.mbs-expanded .mbs-expanded-area { opacity: 1; pointer-events: auto; }
+.mbs-expanded-area::-webkit-scrollbar { width: 3px; }
+.mbs-expanded-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.mbs-sec-title {
+  font-size: 10px; font-weight: 700; letter-spacing: .7px;
+  text-transform: uppercase; color: var(--text-3);
+  margin: 16px 0 10px;
+}
+.mbs-nav-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px; margin-bottom: 6px;
+}
+.mbs-btn-nav {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--border-light);
+  color: var(--text-2); display: flex; align-items: center;
+  justify-content: center; cursor: pointer;
+  transition: background var(--ease), color var(--ease);
+}
+.mbs-btn-nav:hover { background: var(--accent-light); color: var(--accent); }
+.mbs-btn-nav:disabled { opacity: .35; cursor: not-allowed; }
+.mbs-btn-nav-stop {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--border-light);
+  color: var(--text-2); display: flex; align-items: center;
+  justify-content: center; cursor: pointer;
+  transition: background var(--ease);
+}
+.mbs-btn-nav-stop:disabled { opacity: .35; cursor: not-allowed; }
+.mbs-prog-text {
+  font-size: 12px; color: var(--text-3); text-align: center;
+  font-variant-numeric: tabular-nums; margin-bottom: 10px;
+}
+.mbs-speed-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
+}
+.mbs-speed-slider {
+  flex: 1; -webkit-appearance: none;
+  height: 4px; border-radius: 2px;
+  background: var(--border); outline: none; cursor: pointer;
+}
+.mbs-speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(123,141,240,.2);
+}
+.mbs-badge {
+  font-size: 12px; font-weight: 700; color: var(--accent);
+  background: var(--accent-light); padding: 2px 8px;
+  border-radius: 4px; min-width: 42px; text-align: center;
+}
+.mbs-voice-select {
+  width: 100%; padding: 9px 10px; margin-bottom: 4px;
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  font-size: 13px; color: var(--text-1); background: #fff;
+  cursor: pointer; font-family: inherit;
+}
+.mbs-voice-select:focus { outline: none; border-color: var(--accent); }
+.mbs-autoscroll-lbl {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text-2); cursor: pointer;
+  user-select: none; margin: 8px 0 4px;
+}
+.mbs-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mbs-stat-card { background: var(--content-bg); border-radius: var(--r-sm); padding: 10px; text-align: center; }
+.mbs-stat-val { font-size: 16px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+.mbs-stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+
+/* ================================================================
    RESPONSIVE — MOBILE
 ================================================================ */
 @media (max-width: 700px) {
-  :root { --sb-w: 0px; --rp-w: 0px; --bb-h: 80px; }
-  .sidebar-left, .sidebar-right { display: none; }
-  .bottom-bar { left: 0; right: 0; flex-wrap: wrap; height: auto; padding: 12px 14px 14px; gap: 10px; }
-  .content-area { padding: 14px; padding-bottom: 100px; }
-  .content-header { padding: 14px 14px 10px; }
-  .pb-right { flex-wrap: wrap; gap: 8px; }
-  .toast-wrap { right: 14px; bottom: 95px; }
-  .prose-body { padding: 18px 16px; }
-  .prose-p { font-size: 15px; }
+  :root { --sb-w: 0px; --rp-w: 0px; }
+
+  .mobile-header { display: flex; }
+  .mobile-bs     { display: block; }
+
+  .sidebar-right { display: none; }
+  .bottom-bar    { display: none !important; }
+
+  /* sidebar becomes a slide-in drawer */
+  .sidebar-left {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: 280px; z-index: 170;
+    transform: translateX(-100%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+    display: flex;
+  }
+  .sidebar-left.drawer-open { transform: translateX(0); }
+
+  .content-main  { padding-top: 56px; }
+  .content-area  { padding: 16px; padding-bottom: 172px; }
+  .content-header { padding: 12px 16px 10px; }
+
+  .toast-wrap    { right: 14px; bottom: 168px; }
+  .prose-body    { padding: 18px 16px; }
+  .prose-p       { font-size: 15px; }
 }
 </style>
 </head>
@@ -417,6 +626,22 @@ body {
 <input type="file" id="file-input" accept=".pdf">
 
 <div class="app">
+
+  <!-- ===================== MOBILE HEADER ===================== -->
+  <div class="mobile-header" id="mobile-header">
+    <button class="mh-btn" onclick="toggleDrawer()" aria-label="Menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <span class="mh-logo">ditto</span>
+    <button class="mh-btn" onclick="triggerUpload()" aria-label="Importar PDF">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+    </button>
+  </div>
 
   <!-- ===================== LEFT SIDEBAR ===================== -->
   <aside class="sidebar-left">
@@ -592,6 +817,99 @@ body {
       <span>Esc</span> Parar
     </div>
   </aside>
+</div>
+
+<!-- Drawer overlay -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- Mobile Bottom Sheet -->
+<div class="mobile-bs" id="mobile-bs">
+  <div class="mbs-handle" id="mbs-handle" onclick="toggleBottomSheet()">
+    <div class="mbs-drag-pill"></div>
+    <div class="mbs-wave">
+      <div class="mbs-wave-bar" style="height:7px"></div>
+      <div class="mbs-wave-bar" style="height:13px"></div>
+      <div class="mbs-wave-bar" style="height:18px"></div>
+      <div class="mbs-wave-bar" style="height:11px"></div>
+      <div class="mbs-wave-bar" style="height:16px"></div>
+      <div class="mbs-wave-bar" style="height:9px"></div>
+      <div class="mbs-wave-bar" style="height:14px"></div>
+    </div>
+  </div>
+
+  <div class="mbs-controls-row">
+    <button class="mbs-btn-circle" id="mbs-speed-btn" onclick="cycleSpeed()" title="Velocidade">1×</button>
+    <button class="mbs-btn-play-main" onclick="togglePlay()">
+      <svg id="mbs-icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <svg id="mbs-icon-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+    </button>
+    <button class="mbs-btn-circle" onclick="mobileVoiceClick()" title="Voz">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path d="M15.54 8.46a5 5 0 010 7.07"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="mbs-vol-row">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+    <input class="mbs-vol-slider" type="range" id="mbs-vol-slider" min="0" max="1" step="0.05" value="1" oninput="setVolume(parseFloat(this.value))">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
+  </div>
+
+  <div class="mbs-expanded-area" id="mbs-expanded-area">
+    <div class="mbs-sec-title">Navegação</div>
+    <div class="mbs-nav-row">
+      <button class="mbs-btn-nav" id="mbs-btn-prev" onclick="prevChunk()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+      </button>
+      <button class="mbs-btn-nav-stop" id="mbs-btn-stop-m" onclick="stopSpeech()" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+      </button>
+      <button class="mbs-btn-nav" id="mbs-btn-next" onclick="nextChunk()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+      </button>
+    </div>
+    <div class="mbs-prog-text" id="mbs-prog-text">0 / 0</div>
+
+    <div class="mbs-sec-title">Velocidade</div>
+    <div class="mbs-speed-row">
+      <input class="mbs-speed-slider" type="range" id="mbs-speed-slider" min="0" max="2" step="0.05" value="1" oninput="setRate(parseFloat(this.value))">
+      <span class="mbs-badge" id="mbs-speed-badge">1×</span>
+    </div>
+
+    <div class="mbs-sec-title">Voz</div>
+    <select class="mbs-voice-select" id="mbs-voice-select" onchange="setVoice(this.value)">
+      <option>Carregando vozes…</option>
+    </select>
+
+    <label class="mbs-autoscroll-lbl">
+      <input type="checkbox" id="mbs-autoscroll" checked onchange="document.getElementById('autoscroll').checked=this.checked">
+      Auto scroll
+    </label>
+
+    <div class="mbs-sec-title">Documento</div>
+    <div class="mbs-stats-grid">
+      <div class="mbs-stat-card"><div class="mbs-stat-val" id="mbs-st-sents">—</div><div class="mbs-stat-lbl">Frases</div></div>
+      <div class="mbs-stat-card"><div class="mbs-stat-val" id="mbs-st-words">—</div><div class="mbs-stat-lbl">Palavras</div></div>
+      <div class="mbs-stat-card"><div class="mbs-stat-val" id="mbs-st-chars">—</div><div class="mbs-stat-lbl">Caracteres</div></div>
+      <div class="mbs-stat-card"><div class="mbs-stat-val" id="mbs-st-time">—</div><div class="mbs-stat-lbl">Tempo est.</div></div>
+    </div>
+
+    <div class="mbs-sec-title">Ações</div>
+    <button class="btn-action" onclick="toggleFavorite(); collapseBottomSheet()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span id="mbs-fav-label">Adicionar aos favoritos</span>
+    </button>
+    <button class="btn-action" onclick="copyText()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      Copiar texto
+    </button>
+    <button class="btn-action danger" onclick="deleteActiveFile()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+      Excluir arquivo
+    </button>
+  </div>
 </div>
 
 <!-- Context menu -->
@@ -882,12 +1200,15 @@ function loadVoices() {
 }
 
 function renderVoiceSelect() {
-  const sel = document.getElementById('voice-select');
+  const sel  = document.getElementById('voice-select');
+  const msel = document.getElementById('mbs-voice-select');
   sel.innerHTML = '';
+  if (msel) msel.innerHTML = '';
   S.voices.forEach(v => {
     const o = document.createElement('option');
     o.value = v.name; o.textContent = `${v.name} (${v.lang})`;
     sel.appendChild(o);
+    if (msel) msel.appendChild(o.cloneNode(true));
   });
 }
 
@@ -1137,8 +1458,9 @@ function renderContent() {
   document.getElementById('doc-title').textContent = active.name;
   document.getElementById('doc-meta').textContent  =
     `${(active.chunks||[]).length} frases · ${fmtSize(active.size)} · ${active.date}`;
-  document.getElementById('fav-label').textContent =
-    active.favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos';
+  const favText = active.favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos';
+  document.getElementById('fav-label').textContent = favText;
+  const mbsFav = document.getElementById('mbs-fav-label'); if (mbsFav) mbsFav.textContent = favText;
 
   secs.innerHTML = '';
   const body = document.createElement('div');
@@ -1189,23 +1511,34 @@ function updateUI() {
   document.getElementById('icon-pause').style.display = playing ? 'block' : 'none';
   document.getElementById('btn-stop').disabled = !S.isSpeaking && !S.isPaused;
   document.getElementById('waveform').classList.toggle('playing', playing);
+  updateMobileUI();
 }
 
 function updateStats() {
   const af = S.files.find(f => f.id === S.activeId);
   if (!af) {
-    ['st-sents','st-words','st-chars','st-time'].forEach(id =>
-      document.getElementById(id).textContent = '—');
+    ['st-sents','st-words','st-chars','st-time',
+     'mbs-st-sents','mbs-st-words','mbs-st-chars','mbs-st-time'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.textContent = '—';
+    });
     return;
   }
   const text  = af.text || '';
   const words = text.split(/\s+/).filter(Boolean).length;
   const chars = text.length;
   const mins  = Math.round(words / (130 * Math.max(0.1, S.rate))) || 1;
-  document.getElementById('st-sents').textContent = (af.chunks||[]).length;
-  document.getElementById('st-words').textContent = words > 999 ? `${(words/1000).toFixed(1)}k` : words;
-  document.getElementById('st-chars').textContent = chars > 999 ? `${(chars/1000).toFixed(1)}k` : chars;
-  document.getElementById('st-time').textContent  = `~${mins}m`;
+  const sents = (af.chunks||[]).length;
+  const wStr  = words > 999 ? `${(words/1000).toFixed(1)}k` : words;
+  const cStr  = chars > 999 ? `${(chars/1000).toFixed(1)}k` : chars;
+  const tStr  = `~${mins}m`;
+  document.getElementById('st-sents').textContent = sents;
+  document.getElementById('st-words').textContent = wStr;
+  document.getElementById('st-chars').textContent = cStr;
+  document.getElementById('st-time').textContent  = tStr;
+  const ms = document.getElementById('mbs-st-sents'); if (ms) ms.textContent = sents;
+  const mw = document.getElementById('mbs-st-words'); if (mw) mw.textContent = wStr;
+  const mc = document.getElementById('mbs-st-chars'); if (mc) mc.textContent = cStr;
+  const mt = document.getElementById('mbs-st-time');  if (mt) mt.textContent = tStr;
 }
 
 // ──────────────────────────────────────────────
@@ -1219,6 +1552,7 @@ function loadFile(id) {
   S.blocks       = f.blocks || [];
   S.chunks       = f.chunks || [];
   S.currentChunk = -1;
+  closeDrawer();
   lsSave(); renderAll();
 }
 function deleteActiveFile() { if (S.activeId) deleteFile(S.activeId); }
@@ -1311,6 +1645,7 @@ function refreshBadges() {
     : `${r.toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}×`;
   document.getElementById('speed-badge').textContent = rL;
   document.getElementById('vol-badge').textContent   = `${Math.round(S.volume * 100)}%`;
+  updateMobileUI();
 }
 function setSpeedMini(r) {
   const opts = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
@@ -1348,6 +1683,118 @@ document.addEventListener('keydown', e => {
   else if (e.code === 'Escape')     { stopSpeech(); }
 });
 window.speechSynthesis.onvoiceschanged = loadVoices;
+
+// ──────────────────────────────────────────────
+// MOBILE — DRAWER
+// ──────────────────────────────────────────────
+function toggleDrawer() {
+  const sb = document.querySelector('.sidebar-left');
+  sb.classList.contains('drawer-open') ? closeDrawer() : openDrawer();
+}
+function openDrawer() {
+  document.querySelector('.sidebar-left').classList.add('drawer-open');
+  document.getElementById('drawer-overlay').classList.add('open');
+}
+function closeDrawer() {
+  document.querySelector('.sidebar-left').classList.remove('drawer-open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+}
+
+// ──────────────────────────────────────────────
+// MOBILE — BOTTOM SHEET
+// ──────────────────────────────────────────────
+let _bsExpanded = false;
+let _bsTouchStartY = 0;
+
+function toggleBottomSheet() {
+  _bsExpanded = !_bsExpanded;
+  document.getElementById('mobile-bs').classList.toggle('mbs-expanded', _bsExpanded);
+}
+function collapseBottomSheet() {
+  _bsExpanded = false;
+  document.getElementById('mobile-bs').classList.remove('mbs-expanded');
+}
+
+// Swipe up/down on handle to expand/collapse
+(function() {
+  function init() {
+    const handle = document.getElementById('mbs-handle');
+    if (!handle) return;
+    handle.addEventListener('touchstart', e => {
+      _bsTouchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    handle.addEventListener('touchend', e => {
+      const dy = _bsTouchStartY - e.changedTouches[0].clientY;
+      if (dy > 40 && !_bsExpanded) toggleBottomSheet();
+      else if (dy < -40 && _bsExpanded) collapseBottomSheet();
+    }, { passive: true });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+// ──────────────────────────────────────────────
+// MOBILE — SPEED CYCLE
+// ──────────────────────────────────────────────
+const _speedSteps = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+function cycleSpeed() {
+  const cur = _speedSteps.findIndex(s => Math.abs(s - S.rate) < 0.05);
+  setRate(_speedSteps[(cur + 1) % _speedSteps.length]);
+}
+
+function mobileVoiceClick() {
+  if (!_bsExpanded) {
+    _bsExpanded = true;
+    document.getElementById('mobile-bs').classList.add('mbs-expanded');
+    setTimeout(() => {
+      const el = document.getElementById('mbs-voice-select');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 380);
+  }
+}
+
+// ──────────────────────────────────────────────
+// MOBILE — UI SYNC
+// ──────────────────────────────────────────────
+function updateMobileUI() {
+  const bs = document.getElementById('mobile-bs');
+  if (!bs) return;
+  const playing = S.isSpeaking && !S.isPaused;
+
+  // play/pause icons
+  const ip = document.getElementById('mbs-icon-play');
+  const iu = document.getElementById('mbs-icon-pause');
+  if (ip) ip.style.display = playing ? 'none'  : 'block';
+  if (iu) iu.style.display = playing ? 'block' : 'none';
+
+  // wave animation
+  bs.classList.toggle('mbs-playing', playing);
+
+  // stop button
+  const stopM = document.getElementById('mbs-btn-stop-m');
+  if (stopM) stopM.disabled = !S.isSpeaking && !S.isPaused;
+
+  // speed labels
+  const r  = S.rate;
+  const rL = Number.isInteger(r) ? `${r}×`
+    : `${r.toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}×`;
+  const sb2 = document.getElementById('mbs-speed-btn');  if (sb2) sb2.textContent = rL;
+  const sb3 = document.getElementById('mbs-speed-badge'); if (sb3) sb3.textContent = rL;
+
+  // sliders
+  const vs = document.getElementById('mbs-vol-slider');   if (vs) vs.value = S.volume;
+  const ss = document.getElementById('mbs-speed-slider'); if (ss) ss.value = S.rate;
+
+  // voice select
+  const vsel = document.getElementById('mbs-voice-select');
+  if (vsel && S.selectedVoice) vsel.value = S.selectedVoice.name;
+
+  // progress text
+  const prog = document.getElementById('mbs-prog-text');
+  if (prog) prog.textContent = S.chunks.length
+    ? `${S.currentChunk >= 0 ? S.currentChunk + 1 : 0} / ${S.chunks.length}`
+    : '0 / 0';
+}
 
 // ──────────────────────────────────────────────
 // INIT
