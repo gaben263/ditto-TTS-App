@@ -165,7 +165,7 @@ body {
 .upload-hint { font-size: 11px; color: var(--text-3); margin-top: 10px; }
 
 /* ================================================================
-   PROSE — texto corrido com estrutura de livro
+   PROSE
 ================================================================ */
 #text-sections { display: none; }
 
@@ -174,87 +174,60 @@ body {
   padding: 36px 44px; box-shadow: var(--shadow-sm);
   max-width: 780px; margin: 0 auto;
 }
-
-/* Título principal (ALL CAPS, capítulo) */
 .prose-h1 {
   font-size: 18px; font-weight: 700;
   color: var(--text-1); line-height: 1.3;
-  letter-spacing: 0.8px;
-  text-align: center;
-  margin: 2.4em 0 1em;
+  letter-spacing: 0.8px; text-align: center; margin: 2.4em 0 1em;
 }
 .prose-h1:first-child { margin-top: 0; }
-
-/* Subtítulo / seção */
 .prose-h2 {
   font-size: 15px; font-weight: 600;
   color: var(--text-2); line-height: 1.4;
-  margin: 2em 0 0.7em;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--border-light);
+  margin: 2em 0 0.7em; padding-bottom: 6px; border-bottom: 1px solid var(--border-light);
 }
 .prose-h2:first-child { margin-top: 0; }
-
-/* Parágrafo de corpo */
 .prose-p {
-  font-size: 16px; line-height: 2;
-  color: var(--text-1);
-  margin-bottom: 1.2em;
-  text-align: justify; hyphens: auto;
+  font-size: 16px; line-height: 2; color: var(--text-1);
+  margin-bottom: 1.2em; text-align: justify; hyphens: auto;
 }
 .prose-p:last-child { margin-bottom: 0; }
-
-/* Span interativo de frase */
 .sentence {
-  cursor: pointer; border-radius: 3px;
-  padding: 2px 2px; margin: -2px -2px;
+  cursor: pointer; border-radius: 3px; padding: 2px 2px; margin: -2px -2px;
   transition: background var(--ease); display: inline;
 }
 .sentence:hover { background: var(--hover-bg); }
-.sentence.active {
-  background: var(--hi-bg);
-  color: var(--accent-dark);
-}
+.sentence.active { background: var(--hi-bg); color: var(--accent-dark); }
 
 /* ================================================================
    BOTTOM BAR
 ================================================================ */
 .bottom-bar {
-  position: fixed; bottom: 0;
-  left: var(--sb-w); right: var(--rp-w);
-  height: var(--bb-h);
-  background: var(--panel-bg); border-top: 1px solid var(--border);
-  display: none; align-items: center;
-  padding: 0 20px; gap: 14px;
+  position: fixed; bottom: 0; left: var(--sb-w); right: var(--rp-w);
+  height: var(--bb-h); background: var(--panel-bg); border-top: 1px solid var(--border);
+  display: none; align-items: center; padding: 0 20px; gap: 14px;
   box-shadow: 0 -4px 16px rgba(0,0,0,.07); z-index: 100;
 }
 .pb-controls { display: flex; align-items: center; gap: 6px; }
 .btn-ctrl {
-  width: 34px; height: 34px; border-radius: 50%;
-  border: none; background: none; color: var(--text-2);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: background var(--ease), color var(--ease);
+  width: 34px; height: 34px; border-radius: 50%; border: none; background: none; color: var(--text-2);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background var(--ease), color var(--ease);
 }
 .btn-ctrl:hover:not(:disabled) { background: var(--border-light); color: var(--text-1); }
 .btn-ctrl:disabled { opacity: .3; cursor: not-allowed; }
 .btn-play-main {
-  width: 40px; height: 40px; border-radius: 50%;
-  background: var(--accent); color: #fff; border: none;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; flex-shrink: 0;
-  transition: background var(--ease), transform var(--ease);
-  box-shadow: 0 4px 12px rgba(123,141,240,.4);
+  width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #fff; border: none;
+  display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+  transition: background var(--ease), transform var(--ease); box-shadow: 0 4px 12px rgba(123,141,240,.4);
 }
 .btn-play-main:hover { background: var(--accent-dark); transform: scale(1.06); }
 .pb-progress { flex: 1; display: flex; align-items: center; gap: 10px; }
 .pb-text { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .waveform { flex: 1; display: flex; align-items: center; gap: 2px; height: 32px; overflow: hidden; }
 .w-bar {
-  flex: 1; background: #10B981; border-radius: 1px;
-  min-width: 2px; max-width: 4px; transition: height .15s ease;
+  flex: 1; background: #10B981; border-radius: 1px; min-width: 2px; max-width: 4px; transition: height .15s ease;
 }
 @keyframes wavepulse { 0%,100%{height:3px} 50%{height:22px} }
-.waveform.playing .w-bar              { animation: wavepulse .9s ease-in-out infinite; }
+.waveform.playing .w-bar { animation: wavepulse .9s ease-in-out infinite; }
 .waveform.playing .w-bar:nth-child(2n)  { animation-delay: .07s; }
 .waveform.playing .w-bar:nth-child(3n)  { animation-delay: .14s; }
 .waveform.playing .w-bar:nth-child(4n)  { animation-delay: .21s; }
@@ -263,23 +236,17 @@ body {
 .waveform.playing .w-bar:nth-child(11n) { animation-delay: .1s; }
 .pb-right { display: flex; align-items: center; gap: 10px; }
 .speed-mini {
-  font-size: 12px; font-weight: 600;
-  background: var(--border-light); border: none;
-  border-radius: 6px; padding: 5px 9px;
-  color: var(--text-2); cursor: pointer; font-family: inherit;
+  font-size: 12px; font-weight: 600; background: var(--border-light); border: none;
+  border-radius: 6px; padding: 5px 9px; color: var(--text-2); cursor: pointer; font-family: inherit;
 }
 .speed-mini:focus { outline: none; }
-.autoscroll-label {
-  display: flex; align-items: center; gap: 5px;
-  font-size: 12px; color: var(--text-3); cursor: pointer; user-select: none;
-}
+.autoscroll-label { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-3); cursor: pointer; user-select: none; }
 
 /* ================================================================
    RIGHT SIDEBAR
 ================================================================ */
 .sidebar-right {
-  width: var(--rp-w); background: var(--panel-bg);
-  border-left: 1px solid var(--border);
+  width: var(--rp-w); background: var(--panel-bg); border-left: 1px solid var(--border);
   display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto;
 }
 .sidebar-right::-webkit-scrollbar { width: 4px; }
@@ -287,41 +254,29 @@ body {
 .rp-section { padding: 18px 20px; border-bottom: 1px solid var(--border-light); }
 .rp-title { font-size: 10px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; }
 .voice-select {
-  width: 100%; padding: 8px 10px;
-  border: 1px solid var(--border); border-radius: var(--r-sm);
-  font-size: 13px; color: var(--text-1); background: #fff;
-  cursor: pointer; font-family: inherit;
+  width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--r-sm);
+  font-size: 13px; color: var(--text-1); background: #fff; cursor: pointer; font-family: inherit;
 }
 .voice-select:focus { outline: none; border-color: var(--accent); }
 .ctrl-row { display: flex; align-items: center; justify-content: space-between; margin: 14px 0 8px; }
 .ctrl-row-label { font-size: 13px; font-weight: 500; color: var(--text-1); }
 .ctrl-badge { font-size: 12px; font-weight: 700; color: var(--accent); background: var(--accent-light); padding: 2px 8px; border-radius: 4px; }
-.slider {
-  width: 100%; -webkit-appearance: none;
-  height: 4px; border-radius: 2px;
-  background: var(--border); outline: none; cursor: pointer;
-}
+.slider { width: 100%; -webkit-appearance: none; height: 4px; border-radius: 2px; background: var(--border); outline: none; cursor: pointer; }
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
-  background: var(--accent); cursor: pointer;
-  box-shadow: 0 0 0 3px rgba(123,141,240,.2); transition: box-shadow var(--ease);
+  background: var(--accent); cursor: pointer; box-shadow: 0 0 0 3px rgba(123,141,240,.2); transition: box-shadow var(--ease);
 }
 .slider::-webkit-slider-thumb:hover { box-shadow: 0 0 0 5px rgba(123,141,240,.3); }
 .slider-labels { position: relative; height: 14px; margin-top: 5px; }
-.slider-labels span {
-  position: absolute; font-size: 10px; color: var(--text-3);
-  transform: translateX(-50%);
-}
+.slider-labels span { position: absolute; font-size: 10px; color: var(--text-3); transform: translateX(-50%); }
 .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .stat-card { background: var(--content-bg); border-radius: var(--r-sm); padding: 10px; text-align: center; }
 .stat-val { font-size: 16px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
 .stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 2px; }
 .btn-action {
-  display: flex; align-items: center; gap: 10px;
-  width: 100%; padding: 9px 12px;
-  border: 1px solid var(--border); border-radius: var(--r-sm);
-  background: #fff; color: var(--text-1); font-size: 13px; font-weight: 500;
-  cursor: pointer; margin-bottom: 8px; font-family: inherit;
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 12px;
+  border: 1px solid var(--border); border-radius: var(--r-sm); background: #fff; color: var(--text-1);
+  font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 8px; font-family: inherit;
   transition: background var(--ease), border-color var(--ease);
 }
 .btn-action:hover { background: var(--border-light); border-color: transparent; }
@@ -330,20 +285,16 @@ body {
 .btn-action.danger:hover { background: #FEF2F2; }
 
 /* ================================================================
-   CONTEXT MENU
+   CONTEXT MENU & LOADING & TOAST
 ================================================================ */
 .ctx-menu {
-  position: fixed; background: var(--panel-bg);
-  border: 1px solid var(--border); border-radius: var(--r-md);
-  box-shadow: var(--shadow-lg); padding: 4px;
-  min-width: 165px; z-index: 1000; display: none;
+  position: fixed; background: var(--panel-bg); border: 1px solid var(--border); border-radius: var(--r-md);
+  box-shadow: var(--shadow-lg); padding: 4px; min-width: 165px; z-index: 1000; display: none;
 }
 .ctx-menu.open { display: block; }
 .ctx-item {
-  display: flex; align-items: center; gap: 9px;
-  padding: 8px 12px; font-size: 13px; color: var(--text-1);
-  border-radius: var(--r-sm); cursor: pointer;
-  border: none; background: none; width: 100%; text-align: left; font-family: inherit;
+  display: flex; align-items: center; gap: 9px; padding: 8px 12px; font-size: 13px; color: var(--text-1);
+  border-radius: var(--r-sm); cursor: pointer; border: none; background: none; width: 100%; text-align: left; font-family: inherit;
   transition: background var(--ease);
 }
 .ctx-item:hover { background: var(--border-light); }
@@ -351,125 +302,69 @@ body {
 .ctx-item.danger:hover { background: #FEF2F2; }
 .ctx-sep { height: 1px; background: var(--border); margin: 4px 0; }
 
-/* ================================================================
-   LOADING & TOAST
-================================================================ */
 .loading-overlay {
-  position: absolute; inset: 0; background: rgba(255,255,255,.88);
-  display: none; flex-direction: column;
-  align-items: center; justify-content: center;
-  z-index: 50; backdrop-filter: blur(2px);
+  position: absolute; inset: 0; background: rgba(255,255,255,.88); display: none; flex-direction: column;
+  align-items: center; justify-content: center; z-index: 50; backdrop-filter: blur(2px);
 }
 .spinner {
-  width: 36px; height: 36px; border: 3px solid var(--border);
-  border-top-color: var(--accent); border-radius: 50%;
+  width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%;
   animation: spin .65s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-msg { font-size: 13px; color: var(--text-2); margin-top: 12px; }
 .toast-wrap {
-  position: fixed; bottom: calc(var(--bb-h) + 14px);
-  right: calc(var(--rp-w) + 14px); z-index: 300;
+  position: fixed; bottom: calc(var(--bb-h) + 14px); right: calc(var(--rp-w) + 14px); z-index: 300;
   display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
 }
 .toast {
-  background: #1F2937; color: #fff; padding: 10px 16px;
-  border-radius: var(--r-md); font-size: 13px; box-shadow: var(--shadow-md);
+  background: #1F2937; color: #fff; padding: 10px 16px; border-radius: var(--r-md); font-size: 13px; box-shadow: var(--shadow-md);
   animation: toastIn .28s ease forwards; pointer-events: none;
 }
 @keyframes toastIn  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 @keyframes toastOut { to{opacity:0;transform:translateY(-6px)} }
 
 /* ================================================================
-   MISC
+   MISC & RESPONSIVE
 ================================================================ */
 .no-files { padding: 14px 18px; font-size: 12px; color: rgba(255,255,255,.28); line-height: 1.5; }
 .kb-hint { font-size: 10px; color: var(--text-3); padding: 0 20px 14px; line-height: 1.6; }
 .kb-hint span { background: var(--border-light); border-radius: 3px; padding: 1px 5px; font-weight: 600; }
 #file-input { display: none; }
 
-/* ================================================================
-   RESPONSIVE — TABLET  (768 – 1024 px)
-   Keep the full sidebar text: hiding names behind icons is an
-   anti-pattern for document lists.  We just narrow both sidebars
-   so the reading area keeps enough space.
-================================================================ */
 @media (max-width: 1024px) {
   :root { --sb-w: 200px; --rp-w: 220px; }
   .prose-body { padding: 24px 28px; }
-  /* Tighten nav-item padding slightly on smaller tablets */
   .nav-item   { padding: 7px 9px; }
-  /* File names already have text-overflow: ellipsis — nothing extra needed */
 }
 
-/* ================================================================
-   MOBILE HEADER
-================================================================ */
 .mobile-header {
-  display: none;
-  position: fixed; top: 0; left: 0; right: 0; height: 56px;
-  z-index: 150; background: var(--sb-bg);
-  align-items: center; justify-content: space-between;
-  padding: 0 12px;
+  display: none; position: fixed; top: 0; left: 0; right: 0; height: 56px; z-index: 150; background: var(--sb-bg);
+  align-items: center; justify-content: space-between; padding: 0 12px;
 }
 .mh-btn {
-  width: 40px; height: 40px; border-radius: 50%;
-  border: none; background: rgba(255,255,255,.08);
-  color: rgba(255,255,255,.75); cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background var(--ease); flex-shrink: 0;
+  width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(255,255,255,.08); color: rgba(255,255,255,.75);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background var(--ease); flex-shrink: 0;
 }
 .mh-btn:hover { background: rgba(255,255,255,.16); }
-.mh-logo {
-  font-family: 'Fredoka One', cursive; font-size: 26px;
-  color: var(--accent); text-shadow: 0 0 30px rgba(123,141,240,.5);
-  letter-spacing: -0.5px;
-}
+.mh-logo { font-family: 'Fredoka One', cursive; font-size: 26px; color: var(--accent); text-shadow: 0 0 30px rgba(123,141,240,.5); letter-spacing: -0.5px; }
 
-/* ================================================================
-   DRAWER OVERLAY
-================================================================ */
 .drawer-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,.52);
-  z-index: 160; display: none;
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(1px);
+  position: fixed; inset: 0; background: rgba(0,0,0,.52); z-index: 160; display: none;
+  backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px);
 }
 .drawer-overlay.open { display: block; }
 
-/* ================================================================
-   MOBILE BOTTOM SHEET
-================================================================ */
+/* MOBILE BOTTOM SHEET */
 .mobile-bs {
-  display: none;
-  position: fixed; left: 0; right: 0; bottom: 0;
-  background: var(--panel-bg);
-  border-radius: 22px 22px 0 0;
-  box-shadow: 0 -6px 28px rgba(0,0,0,.14);
-  z-index: 130;
-  height: 162px;
-  overflow: hidden;
-  transition: height .35s cubic-bezier(.4,0,.2,1);
-  will-change: height;
+  display: none; position: fixed; left: 0; right: 0; bottom: 0; background: var(--panel-bg);
+  border-radius: 22px 22px 0 0; box-shadow: 0 -6px 28px rgba(0,0,0,.14); z-index: 130; height: 162px;
+  overflow: hidden; transition: height .35s cubic-bezier(.4,0,.2,1); will-change: height;
 }
 .mobile-bs.mbs-expanded { height: 82vh; }
-
-.mbs-handle {
-  display: flex; flex-direction: column;
-  align-items: center; padding: 10px 0 2px;
-  cursor: pointer; user-select: none;
-}
-.mbs-drag-pill {
-  width: 38px; height: 4px; border-radius: 2px;
-  background: var(--border); margin-bottom: 8px;
-}
-.mbs-wave {
-  display: flex; align-items: flex-end; gap: 3px; height: 20px;
-}
-.mbs-wave-bar {
-  width: 3px; border-radius: 2px;
-  background: var(--accent); opacity: .5; height: 6px;
-}
+.mbs-handle { display: flex; flex-direction: column; align-items: center; padding: 10px 0 2px; cursor: pointer; user-select: none; }
+.mbs-drag-pill { width: 38px; height: 4px; border-radius: 2px; background: var(--border); margin-bottom: 8px; }
+.mbs-wave { display: flex; align-items: flex-end; gap: 3px; height: 20px; }
+.mbs-wave-bar { width: 3px; border-radius: 2px; background: var(--accent); opacity: .5; height: 6px; }
 @keyframes mbsWave { 0%,100%{height:3px} 50%{height:17px} }
 .mobile-bs.mbs-playing .mbs-wave-bar { animation: mbsWave .9s ease-in-out infinite; }
 .mobile-bs.mbs-playing .mbs-wave-bar:nth-child(1) { animation-delay:.00s; }
@@ -480,201 +375,65 @@ body {
 .mobile-bs.mbs-playing .mbs-wave-bar:nth-child(6) { animation-delay:.30s; }
 .mobile-bs.mbs-playing .mbs-wave-bar:nth-child(7) { animation-delay:.06s; }
 
-/* ── compact controls row ──────────────────────────────────── */
-.mbs-controls-row {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  padding: 2px 18px 8px;
-}
-
-/* central cluster: prev + play + next */
-.mbs-play-cluster {
-  display: flex; align-items: center; gap: 8px;
-}
-.mbs-btn-skip {
-  width: 42px; height: 42px; border-radius: 50%;
-  border: none; background: none; color: var(--text-2);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; flex-shrink: 0;
-  transition: color var(--ease), background var(--ease);
-}
+.mbs-controls-row { display: flex; align-items: center; justify-content: space-between; padding: 2px 18px 8px; }
+.mbs-play-cluster { display: flex; align-items: center; gap: 8px; }
+.mbs-btn-skip { width: 42px; height: 42px; border-radius: 50%; border: none; background: none; color: var(--text-2); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: color var(--ease), background var(--ease); }
 .mbs-btn-skip:hover { color: var(--accent); background: var(--hover-bg); }
-.mbs-btn-play-main {
-  width: 62px; height: 62px; border-radius: 50%;
-  background: var(--accent); color: #fff; border: none;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; flex-shrink: 0;
-  box-shadow: 0 6px 20px rgba(123,141,240,.45);
-  transition: background var(--ease), transform var(--ease);
-}
+.mbs-btn-play-main { width: 62px; height: 62px; border-radius: 50%; background: var(--accent); color: #fff; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 6px 20px rgba(123,141,240,.45); transition: background var(--ease), transform var(--ease); }
 .mbs-btn-play-main:hover  { background: var(--accent-dark); }
 .mbs-btn-play-main:active { transform: scale(0.95); }
 
-/* ── pill-button: invisible <select> over a styled face ────── *
- * The face (visual) sits in normal flow; the <select> is an
- * absolutely-positioned transparent overlay that captures taps
- * and opens the native iOS wheel / Android modal — giving a
- * 100% native picker experience behind a custom visual.        */
-.mbs-pill-wrap {
-  position: relative; width: 52px; height: 52px; flex-shrink: 0;
-}
-.mbs-pill-face {
-  position: absolute; inset: 0; border-radius: 50%;
-  background: var(--border-light); border: 2px solid var(--border);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 2px; pointer-events: none;
-  transition: background var(--ease), border-color var(--ease),
-              box-shadow var(--ease);
-}
-.mbs-pill-wrap:focus-within .mbs-pill-face {
-  background: var(--accent-light); border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(123,141,240,.18);
-}
+.mbs-pill-wrap { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
+.mbs-pill-face { position: absolute; inset: 0; border-radius: 50%; background: var(--border-light); border: 2px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; pointer-events: none; transition: background var(--ease), border-color var(--ease), box-shadow var(--ease); }
+.mbs-pill-wrap:focus-within .mbs-pill-face { background: var(--accent-light); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(123,141,240,.18); }
 .mbs-pill-face svg { flex-shrink: 0; opacity: .6; }
-.mbs-pill-val {
-  font-size: 11px; font-weight: 700; line-height: 1;
-  color: var(--text-1); letter-spacing: -.2px;
-}
-/* the actual <select> — completely transparent, fills the pill */
-.mbs-pill-ovr {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  opacity: 0; cursor: pointer;
-  -webkit-appearance: none; appearance: none;
-  border: none; background: transparent;
-  /* prevent iOS auto-zoom on focus (needs font-size ≥ 16px) */
-  font-size: 16px;
-}
+.mbs-pill-val { font-size: 11px; font-weight: 700; line-height: 1; color: var(--text-1); letter-spacing: -.2px; }
+.mbs-pill-ovr { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; -webkit-appearance: none; appearance: none; border: none; background: transparent; font-size: 16px; }
 
-.mbs-vol-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 0 24px 12px; color: var(--text-3);
-}
-.mbs-vol-slider {
-  flex: 1; -webkit-appearance: none;
-  height: 4px; border-radius: 2px;
-  background: var(--border); outline: none; cursor: pointer;
-}
-.mbs-vol-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
-  background: var(--accent); cursor: pointer;
-  box-shadow: 0 0 0 3px rgba(123,141,240,.2);
-}
+.mbs-vol-row { display: flex; align-items: center; gap: 10px; padding: 0 24px 12px; color: var(--text-3); }
+.mbs-vol-slider { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: var(--border); outline: none; cursor: pointer; }
+.mbs-vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 0 3px rgba(123,141,240,.2); }
 
-/* expanded area */
-.mbs-expanded-area {
-  overflow-y: auto; padding: 0 20px 32px;
-  height: calc(82vh - 162px);
-  opacity: 0; pointer-events: none;
-  transition: opacity .2s ease .12s;
-}
+.mbs-expanded-area { overflow-y: auto; padding: 0 20px 32px; height: calc(82vh - 162px); opacity: 0; pointer-events: none; transition: opacity .2s ease .12s; }
 .mobile-bs.mbs-expanded .mbs-expanded-area { opacity: 1; pointer-events: auto; }
 .mbs-expanded-area::-webkit-scrollbar { width: 3px; }
 .mbs-expanded-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-.mbs-sec-title {
-  font-size: 10px; font-weight: 700; letter-spacing: .7px;
-  text-transform: uppercase; color: var(--text-3);
-  margin: 16px 0 10px;
-}
-.mbs-nav-row {
-  display: flex; align-items: center; justify-content: center;
-  gap: 14px; margin-bottom: 6px;
-}
-.mbs-btn-nav {
-  width: 40px; height: 40px; border-radius: 50%;
-  border: 1px solid var(--border); background: var(--border-light);
-  color: var(--text-2); display: flex; align-items: center;
-  justify-content: center; cursor: pointer;
-  transition: background var(--ease), color var(--ease);
-}
+.mbs-sec-title { font-size: 10px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; color: var(--text-3); margin: 16px 0 10px; }
+.mbs-nav-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 6px; }
+.mbs-btn-nav { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--border-light); color: var(--text-2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background var(--ease), color var(--ease); }
 .mbs-btn-nav:hover { background: var(--accent-light); color: var(--accent); }
 .mbs-btn-nav:disabled { opacity: .35; cursor: not-allowed; }
-.mbs-btn-nav-stop {
-  width: 40px; height: 40px; border-radius: 50%;
-  border: 1px solid var(--border); background: var(--border-light);
-  color: var(--text-2); display: flex; align-items: center;
-  justify-content: center; cursor: pointer;
-  transition: background var(--ease);
-}
+.mbs-btn-nav-stop { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--border-light); color: var(--text-2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background var(--ease); }
 .mbs-btn-nav-stop:disabled { opacity: .35; cursor: not-allowed; }
-.mbs-prog-text {
-  font-size: 12px; color: var(--text-3); text-align: center;
-  font-variant-numeric: tabular-nums; margin-bottom: 10px;
-}
-.mbs-speed-row {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
-}
-.mbs-speed-slider {
-  flex: 1; -webkit-appearance: none;
-  height: 4px; border-radius: 2px;
-  background: var(--border); outline: none; cursor: pointer;
-}
-.mbs-speed-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
-  background: var(--accent); cursor: pointer;
-  box-shadow: 0 0 0 3px rgba(123,141,240,.2);
-}
-.mbs-badge {
-  font-size: 12px; font-weight: 700; color: var(--accent);
-  background: var(--accent-light); padding: 2px 8px;
-  border-radius: 4px; min-width: 42px; text-align: center;
-}
-.mbs-voice-select {
-  width: 100%; padding: 9px 10px; margin-bottom: 4px;
-  border: 1px solid var(--border); border-radius: var(--r-sm);
-  font-size: 13px; color: var(--text-1); background: #fff;
-  cursor: pointer; font-family: inherit;
-}
+.mbs-prog-text { font-size: 12px; color: var(--text-3); text-align: center; font-variant-numeric: tabular-nums; margin-bottom: 10px; }
+.mbs-speed-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.mbs-speed-slider { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: var(--border); outline: none; cursor: pointer; }
+.mbs-speed-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 0 3px rgba(123,141,240,.2); }
+.mbs-badge { font-size: 12px; font-weight: 700; color: var(--accent); background: var(--accent-light); padding: 2px 8px; border-radius: 4px; min-width: 42px; text-align: center; }
+.mbs-voice-select { width: 100%; padding: 9px 10px; margin-bottom: 4px; border: 1px solid var(--border); border-radius: var(--r-sm); font-size: 13px; color: var(--text-1); background: #fff; cursor: pointer; font-family: inherit; }
 .mbs-voice-select:focus { outline: none; border-color: var(--accent); }
-.mbs-autoscroll-lbl {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 13px; color: var(--text-2); cursor: pointer;
-  user-select: none; margin: 8px 0 4px;
-}
+.mbs-autoscroll-lbl { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); cursor: pointer; user-select: none; margin: 8px 0 4px; }
 .mbs-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .mbs-stat-card { background: var(--content-bg); border-radius: var(--r-sm); padding: 10px; text-align: center; }
 .mbs-stat-val { font-size: 16px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
 .mbs-stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 2px; }
 
-/* ================================================================
-   RESPONSIVE — MOBILE
-================================================================ */
 @media (max-width: 700px) {
   :root { --sb-w: 0px; --rp-w: 0px; }
-
   .mobile-header { display: flex; }
   .mobile-bs     { display: block; }
-
   .sidebar-right { display: none; }
   .bottom-bar    { display: none !important; }
-
-  /* sidebar becomes a slide-in drawer */
-  .sidebar-left {
-    position: fixed; top: 0; left: 0; bottom: 0;
-    width: 280px; z-index: 170;
-    transform: translateX(-100%);
-    transition: transform .28s cubic-bezier(.4,0,.2,1);
-    display: flex;
-  }
+  .sidebar-left { position: fixed; top: 0; left: 0; bottom: 0; width: 280px; z-index: 170; transform: translateX(-100%); transition: transform .28s cubic-bezier(.4,0,.2,1); display: flex; }
   .sidebar-left.drawer-open { transform: translateX(0); }
-
   .content-main  { padding-top: 56px; }
   .content-area  { padding: 16px; padding-bottom: 172px; }
   .content-header { padding: 12px 16px 10px; }
-
   .toast-wrap    { right: 14px; bottom: 168px; }
   .prose-body    { padding: 18px 16px; }
   .prose-p       { font-size: 15px; }
-
-  /* ── Drawer cascade-reset ───────────────────────────────────────
-   * On screens ≤700px *both* tablet and mobile media-queries fire.
-   * These rules win over any tablet narrowing and guarantee every
-   * element inside the slide-in drawer is fully visible.          */
-  .sidebar-left .sb-section-title,
-  .sidebar-left .file-info,
-  .sidebar-left .date-label    { display: block; }
+  .sidebar-left .sb-section-title, .sidebar-left .file-info, .sidebar-left .date-label { display: block; }
   .sidebar-left .nav-item span { display: inline; }
   .sidebar-left .nav-item      { justify-content: flex-start; padding: 8px 10px; }
   .sidebar-left .sb-logo       { justify-content: flex-start; }
@@ -859,6 +618,10 @@ body {
 
     <div class="rp-section">
       <div class="rp-title">Ações</div>
+      <button class="btn-action" onclick="document.getElementById('api-modal-overlay').classList.add('open')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"></path></svg>
+        Trocar Key ElevenLabs
+      </button>
       <button class="btn-action" onclick="toggleFavorite()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <span id="fav-label">Adicionar aos favoritos</span>
@@ -884,6 +647,18 @@ body {
 <!-- Drawer overlay -->
 <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
 
+<!-- Modal da API Key ElevenLabs -->
+<div class="drawer-overlay" id="api-modal-overlay" style="z-index: 2000;" onclick="closeApiModal(event)">
+  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--panel-bg); padding: 32px; border-radius: var(--r-md); width: 90%; max-width: 400px; box-shadow: var(--shadow-lg);" onclick="event.stopPropagation()">
+    <h3 style="margin-bottom: 12px; color: var(--text-1);">Configuração de Voz</h3>
+    <p style="font-size: 13px; color: var(--text-2); margin-bottom: 20px; line-height: 1.5;">
+      Para gerar áudio de alta qualidade, cole sua Secret Key da ElevenLabs abaixo. Ela ficará salva apenas neste dispositivo.
+    </p>
+    <input type="password" id="eleven-key-input" placeholder="sk_..." style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--r-sm); margin-bottom: 20px; font-family: monospace;">
+    <button class="btn-primary" style="width: 100%;" onclick="saveApiKey()">Salvar Chave</button>
+  </div>
+</div>
+
 <!-- Mobile Bottom Sheet -->
 <div class="mobile-bs" id="mobile-bs">
   <div class="mbs-handle" id="mbs-handle" onclick="toggleBottomSheet()">
@@ -900,7 +675,6 @@ body {
   </div>
 
   <div class="mbs-controls-row">
-
     <!-- ── Speed pill (left) ─────────────────────────── -->
     <div class="mbs-pill-wrap">
       <div class="mbs-pill-face">
@@ -960,7 +734,6 @@ body {
         <option>Carregando…</option>
       </select>
     </div>
-
   </div>
 
   <div class="mbs-vol-row">
@@ -1009,6 +782,10 @@ body {
     </div>
 
     <div class="mbs-sec-title">Ações</div>
+    <button class="btn-action" onclick="document.getElementById('api-modal-overlay').classList.add('open')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 0 0 4.561 21h14.878a2 2 0 0 0 1.94-1.515L22 17"></path></svg>
+      Trocar Key ElevenLabs
+    </button>
     <button class="btn-action" onclick="toggleFavorite(); collapseBottomSheet()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       <span id="mbs-fav-label">Adicionar aos favoritos</span>
@@ -1057,9 +834,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 const S = {
   files:         [],
   activeId:      null,
-  // blocks = [{ type:'h1'|'h2'|'p', sentences:['...'] }]
   blocks:        [],
-  chunks:        [],   // flat sentence array (= blocks.flatMap(b=>b.sentences))
+  chunks:        [],
   currentChunk:  -1,
   isSpeaking:    false,
   isPaused:      false,
@@ -1069,34 +845,80 @@ const S = {
   volume:        1.0,
   _pendingVoice: null,
   elapsedSec:    0,
-  filterView:    'all',  // 'all' | 'favorites'
+  filterView:    'all',
 };
 
 let _ctxFileId   = null;
-let _curUtter    = null;
 let _elapsedInt  = null;
-let _resumeInt   = null;
 let _rateDebounce = null;
 let _volDebounce  = null;
 
-// ──────────────────────────────────────────────
-// WAKE LOCK  (evita que o celular durma durante a leitura)
-// ──────────────────────────────────────────────
-let _wakeLock = null;
+// ElevenLabs State
+let _elevenKey = localStorage.getItem('eleven_api_key') || '';
+let _currentAudio = null;
+let _isLoadingAudio = false;
 
-async function requestWakeLock() {
-  if (!('wakeLock' in navigator)) return;
-  try {
-    _wakeLock = await navigator.wakeLock.request('screen');
-  } catch(e) { /* API negada ou não suportada */ }
+// Buffer State (Pre-fetch)
+let _nextAudio = null;
+let _nextIdx = -1;
+let _isPrefetching = false;
+
+// ──────────────────────────────────────────────
+// ELEVENLABS CONFIG
+// ──────────────────────────────────────────────
+function saveApiKey() {
+  const input = document.getElementById('eleven-key-input').value.trim();
+  if (!input.startsWith('sk_')) {
+    alert('A chave deve começar com sk_');
+    return;
+  }
+  _elevenKey = input;
+  localStorage.setItem('eleven_api_key', _elevenKey);
+  document.getElementById('api-modal-overlay').classList.remove('open');
+  toast('Chave configurada com sucesso!');
+  loadElevenVoices();
 }
 
+function closeApiModal(e) {
+  // Se já existir uma chave, permite fechar o modal livremente
+  if (_elevenKey) {
+    document.getElementById('api-modal-overlay').classList.remove('open');
+  } else {
+    // Se não existir, bloqueia e alerta o usuário
+    toast('Insira uma chave válida para utilizar o app.');
+  }
+}
+
+async function loadElevenVoices() {
+  if (!_elevenKey) return;
+  try {
+    const res = await fetch('https://api.elevenlabs.io/v1/voices', {
+      headers: { 'xi-api-key': _elevenKey }
+    });
+    const data = await res.json();
+    S.voices = data.voices.map(v => ({ name: v.name, id: v.voice_id, lang: 'pt-BR' }));
+    renderVoiceSelect();
+    if (S.voices.length) setVoice(S.voices[0].name);
+  } catch (e) {
+    console.error('Erro ao carregar vozes', e);
+    toast('Falha ao conectar na ElevenLabs. Verifique sua chave.');
+  }
+}
+
+// ──────────────────────────────────────────────
+// WAKE LOCK
+// ──────────────────────────────────────────────
+let _wakeLock = null;
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator)) return;
+  try { _wakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
+}
 function releaseWakeLock() {
   if (_wakeLock) { _wakeLock.release().catch(() => {}); _wakeLock = null; }
 }
 
 // ──────────────────────────────────────────────
-// LOCAL STORAGE  (v3: blocks structure)
+// LOCAL STORAGE
 // ──────────────────────────────────────────────
 const LS = 'ditto_v3';
 
@@ -1113,7 +935,7 @@ async function lsSave() {
       volume:       S.volume,
       voiceName:    S.selectedVoice ? S.selectedVoice.name : null,
     });
-  } catch(e) { /* storage full */ }
+  } catch(e) { }
 }
 
 async function lsLoad() {
@@ -1138,70 +960,39 @@ async function lsLoad() {
 // ──────────────────────────────────────────────
 // TEXT PROCESSING
 // ──────────────────────────────────────────────
-
 function cleanRaw(raw) {
-  let t = raw
-    .replace(/\r\n/g, '\n').replace(/\r/g, '\n')
-    .replace(/[ \t]{2,}/g, ' ')
+  let t = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/[ \t]{2,}/g, ' ')
     .split('\n').map(l => l.trim()).join('\n')
-    // join soft-wrapped lines (no sentence-ending punct before break)
     .replace(/([^\.\!\?\:\;\n—–])\n([A-Za-zÀ-ÿ0-9\("])/g, '$1 $2')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-
-  // Fix glyph-spacing artefacts: chains of single-char fragments
-  // "c r i a r" → "criar" (safe: single chars in ≥3 chain = never valid prose)
+    .replace(/\n{3,}/g, '\n\n').trim();
   let prev;
   do {
     prev = t;
-    t = t.replace(
-      /(?<!\w)([a-záàãâéêíóôõúüç]) ([a-záàãâéêíóôõúüç]) ([a-záàãâéêíóôõúüç])(?!\w)/g,
-      '$1$2$3'
-    );
+    t = t.replace(/(?<!\w)([a-záàãâéêíóôõúüç]) ([a-záàãâéêíóôõúüç]) ([a-záàãâéêíóôõúüç])(?!\w)/g, '$1$2$3');
   } while (t !== prev);
-
   return t;
 }
 
-/*
- * classifyBlock: decides if a paragraph-level block is a title or body text.
- *
- * Heading signals (h1 = major, h2 = minor):
- *   – Entirely uppercase + short → h1
- *   – Starts with a known heading keyword → h2
- *   – Short block with no terminal punctuation → h2
- */
 function classifyBlock(text) {
   const t     = text.trim();
   const words = t.split(/\s+/).filter(Boolean);
   const wc    = words.length;
-
-  // All-uppercase text (chapter title, "PREFÁCIO", "PRIMEIRA SECÇÃO", etc.)
   const hasLetter = /[A-ZÁÀÃÂÉÊÍÓÔÕÚ]/.test(t);
   const isAllUpper = hasLetter && (t.toUpperCase() === t);
   if (isAllUpper && wc <= 14) return 'h1';
-
-  // Explicit heading keywords
   const kwPat = /^(capítulo|chapter|parte|part|secção|seção|section|prefácio|preface|introdução|introduction|conclusão|conclusion|apêndice|prólogo|epílogo|sumário|posfácio|epígrafo)/i;
   if (kwPat.test(t) && wc <= 16) return 'h2';
-
-  // Numbered / roman numeral headings: "I. Título", "1. Título", "§ 3"
   const numPat = /^([IVXivx]+\.?\s+\S|[A-Z]?\d+\.?\s+[A-ZÁÀÃÂ]|§\s*\d)/;
   if (numPat.test(t) && wc <= 14) return 'h2';
-
-  // Short block without terminal sentence punctuation → likely a standalone title
   const hasTerminal = /[.!?…]$/.test(t);
   if (!hasTerminal && wc <= 8 && t.length <= 80) return 'h2';
-
   return 'p';
 }
 
 function splitSentences(para) {
-  // Capture text + terminal punctuation (including closing quotes/parens)
   const re = /[^.!?…]+[.!?…]+['"»)\]]*\s*/g;
   const matches = para.match(re) || [];
   const sents   = matches.map(s => s.trim()).filter(s => s.length > 2);
-  // Trailing text without terminal punctuation
   const rem = para.slice(matches.join('').length).trim();
   if (rem.length > 2) sents.push(rem);
   return sents.length ? sents : (para.trim().length > 2 ? [para.trim()] : []);
@@ -1209,28 +1000,16 @@ function splitSentences(para) {
 
 function buildBlocks(rawText) {
   const cleaned  = cleanRaw(rawText);
-  const rawParas = cleaned
-    .split(/\n\n+/)
-    .map(p => p.replace(/\n/g, ' ').trim())
-    .filter(p => p.length > 2);
-
-  return rawParas
-    .map(p => {
-      const type      = classifyBlock(p);
-      const sentences = type === 'p' ? splitSentences(p) : [p.trim()];
-      return { type, sentences: sentences.filter(s => s.length > 1) };
-    })
-    .filter(b => b.sentences.length > 0);
+  const rawParas = cleaned.split(/\n\n+/).map(p => p.replace(/\n/g, ' ').trim()).filter(p => p.length > 2);
+  return rawParas.map(p => {
+    const type      = classifyBlock(p);
+    const sentences = type === 'p' ? splitSentences(p) : [p.trim()];
+    return { type, sentences: sentences.filter(s => s.length > 1) };
+  }).filter(b => b.sentences.length > 0);
 }
 
 // ──────────────────────────────────────────────
-// PDF LOADING  ·  geometric 3-pass engine
-//
-// Pass 1 — cluster raw items into visual lines
-// Pass 2 — compute per-page statistics
-//          (body size, body font, left/right margins)
-// Pass 3 — apply 5 geometric rules to emit \n\n
-//          paragraph breaks into the output text
+// PDF LOADING
 // ──────────────────────────────────────────────
 async function loadPDF(file) {
   loading(true);
@@ -1242,65 +1021,38 @@ async function loadPDF(file) {
     for (let pg = 1; pg <= pdf.numPages; pg++) {
       const page = await pdf.getPage(pg);
       const tc   = await page.getTextContent();
-
-      /* ── annotate raw items ──────────────────────────────── */
       const raw = [];
       for (const it of tc.items) {
         if (!('str' in it) || !it.str) continue;
-        const x    = it.transform[4];
-        const y    = it.transform[5];
+        const x    = it.transform[4], y = it.transform[5];
         const size = Math.sqrt(it.transform[0] ** 2 + it.transform[1] ** 2) || 12;
-        const iw   = (typeof it.width === 'number' && it.width > 0)
-                       ? it.width : size * it.str.length * 0.55;
+        const iw   = (typeof it.width === 'number' && it.width > 0) ? it.width : size * it.str.length * 0.55;
         raw.push({ str: it.str, x, y, size, iw, font: it.fontName || '' });
       }
       if (!raw.length) continue;
 
-      /* ════════════════════════════════════════════════════════
-         PASS 1 — cluster items into visual lines
-         Items whose Y coordinates are within (size × 0.4) of
-         the group's running centroid are merged together.
-         ════════════════════════════════════════════════════════ */
       const groups = [];
       for (const it of raw) {
         const thr = Math.max(it.size * 0.4, 2.5);
         const grp = groups.find(g => Math.abs(g.cy - it.y) < thr);
-        if (grp) {
-          grp.items.push(it);
-          // drift centroid toward new item
-          grp.cy += (it.y - grp.cy) / grp.items.length;
-        } else {
-          groups.push({ cy: it.y, items: [it] });
-        }
+        if (grp) { grp.items.push(it); grp.cy += (it.y - grp.cy) / grp.items.length; }
+        else { groups.push({ cy: it.y, items: [it] }); }
       }
-      // sort top → bottom (largest PDF-Y = nearest top of page)
       groups.sort((a, b) => b.cy - a.cy);
 
-      /* build line descriptors from each group */
       const lines = groups.map(g => {
-        g.items.sort((a, b) => a.x - b.x);       // left → right
-        let text = '', lastEnd = null;
-        let minX = Infinity, maxEndX = -Infinity;
-        let sizeMass = 0, totalChars = 0;
+        g.items.sort((a, b) => a.x - b.x);
+        let text = '', lastEnd = null, minX = Infinity, maxEndX = -Infinity, sizeMass = 0, totalChars = 0;
         const fonts = {};
-
         for (const it of g.items) {
-          /* inter-item spacing within the same visual line */
           if (lastEnd !== null) {
             const gap = it.x - lastEnd;
-            if (gap > it.size * 0.35 &&
-                !text.endsWith(' ') && !it.str.startsWith(' '))
-              text += ' ';
+            if (gap > it.size * 0.35 && !text.endsWith(' ') && !it.str.startsWith(' ')) text += ' ';
           }
-          text       += it.str;
-          minX        = Math.min(minX, it.x);
-          maxEndX     = Math.max(maxEndX, it.x + it.iw);
-          lastEnd     = it.x + it.iw;
-          sizeMass   += it.size * it.str.length;
-          totalChars += it.str.length;
+          text += it.str; minX = Math.min(minX, it.x); maxEndX = Math.max(maxEndX, it.x + it.iw);
+          lastEnd = it.x + it.iw; sizeMass += it.size * it.str.length; totalChars += it.str.length;
           fonts[it.font] = (fonts[it.font] || 0) + it.str.length;
         }
-
         const size = totalChars ? sizeMass / totalChars : g.items[0].size;
         const font = Object.entries(fonts).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
         return { y: g.cy, text: text.trim(), minX, maxEndX, size, font };
@@ -1308,142 +1060,49 @@ async function loadPDF(file) {
 
       if (!lines.length) continue;
 
-      /* ════════════════════════════════════════════════════════
-         PASS 2 — per-page statistics
-         ════════════════════════════════════════════════════════ */
-
-      /* body size: size bucket with the most character weight  */
       const szBkt = {};
-      for (const l of lines) {
-        const b = Math.round(l.size * 2) / 2;          // 0.5 pt resolution
-        szBkt[b] = (szBkt[b] || 0) + l.text.length;
-      }
-      const bodySize = +(Object.entries(szBkt)
-        .sort((a, b) => b[1] - a[1])[0]?.[0] ?? 12);
+      for (const l of lines) { const b = Math.round(l.size * 2) / 2; szBkt[b] = (szBkt[b] || 0) + l.text.length; }
+      const bodySize = +(Object.entries(szBkt).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 12);
 
-      /* body font: most common font among body-sized lines     */
       const fnBkt = {};
       for (const l of lines) {
-        if (Math.abs(l.size - bodySize) <= bodySize * 0.18)
-          fnBkt[l.font] = (fnBkt[l.font] || 0) + l.text.length;
+        if (Math.abs(l.size - bodySize) <= bodySize * 0.18) fnBkt[l.font] = (fnBkt[l.font] || 0) + l.text.length;
       }
-      const bodyFont = Object.entries(fnBkt)
-        .sort((a, b) => b[1] - a[1])[0]?.[0] ?? '';
+      const bodyFont = Object.entries(fnBkt).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '';
 
-      /* left margin: modal minX (3 pt grid) of body-sized lines */
       const xBkt = {};
       for (const l of lines) {
         if (Math.abs(l.size - bodySize) <= bodySize * 0.18) {
-          const b = Math.round(l.minX / 3) * 3;
-          xBkt[b] = (xBkt[b] || 0) + 1;
+          const b = Math.round(l.minX / 3) * 3; xBkt[b] = (xBkt[b] || 0) + 1;
         }
       }
-      const leftMargin = +(Object.entries(xBkt)
-        .sort((a, b) => b[1] - a[1])[0]?.[0]
-        ?? lines[0].minX);
+      const leftMargin = +(Object.entries(xBkt).sort((a, b) => b[1] - a[1])[0]?.[0] ?? lines[0].minX);
 
-      /* right margin: 85th-percentile maxEndX of body-sized lines */
-      const endXs = lines
-        .filter(l => Math.abs(l.size - bodySize) <= bodySize * 0.18)
-        .map(l => l.maxEndX)
-        .sort((a, b) => a - b);
-      const rightMargin = endXs.length
-        ? endXs[Math.floor(endXs.length * 0.85)]
-        : lines.reduce((m, l) => Math.max(m, l.maxEndX), 0);
-
-      /* effective column width (floor: 5 × bodySize to stay sane) */
+      const endXs = lines.filter(l => Math.abs(l.size - bodySize) <= bodySize * 0.18).map(l => l.maxEndX).sort((a, b) => a - b);
+      const rightMargin = endXs.length ? endXs[Math.floor(endXs.length * 0.85)] : lines.reduce((m, l) => Math.max(m, l.maxEndX), 0);
       const colWidth = Math.max(rightMargin - leftMargin, bodySize * 5);
 
-      /* ════════════════════════════════════════════════════════
-         PASS 3 — geometric paragraph segmentation
-         Each rule appends \n\n when it fires; otherwise text
-         is joined with a space (or hyphen-merged when needed).
-         ════════════════════════════════════════════════════════ */
-      let pageText = '';
-      let prev     = null;
-
+      let pageText = ''; let prev = null;
       for (const line of lines) {
         if (!line.text) continue;
-
-        /* first line of this page: no previous context */
-        if (prev === null) {
-          pageText += line.text;
-          prev = line;
-          continue;
-        }
-
-        /* dy is always positive: distance moving down the page  */
-        const dy    = prev.y - line.y;
-        /* lineH is the effective line-height reference value    */
-        const lineH = Math.max(prev.size, line.size, bodySize * 0.8);
-
-        /* ── RULE 5 — Typographic isolation ────────────────────
-         * Lines significantly larger or smaller than the body
-         * text body size are isolated into their own block so
-         * that classifyBlock() can later label them h1 / h2.
-         *
-         * Font-family changes on short lines (≤ 120 chars) are
-         * also isolated — they are likely bold section headers
-         * at the same nominal size.                              */
+        if (prev === null) { pageText += line.text; prev = line; continue; }
+        const dy = prev.y - line.y, lineH = Math.max(prev.size, line.size, bodySize * 0.8);
         const biggerSize = line.size > bodySize * 1.15;
         const smallerSz  = line.size < bodySize * 0.82;
         const fontBreak  = line.font !== bodyFont && line.text.length <= 120;
-
-        if (biggerSize || smallerSz || fontBreak) {
-          pageText += '\n\n' + line.text;
-          prev = line; continue;
-        }
-
-        /* ── Sanity guard — overlapping / duplicate Y ───────────
-         * (can occur with multi-column bleed or rotated glyphs) */
+        if (biggerSize || smallerSz || fontBreak) { pageText += '\n\n' + line.text; prev = line; continue; }
         if (dy < lineH * 0.3) {
-          if (!pageText.endsWith(' ') && !line.text.startsWith(' '))
-            pageText += ' ';
-          pageText += line.text;
-          prev = line; continue;
+          if (!pageText.endsWith(' ') && !line.text.startsWith(' ')) pageText += ' ';
+          pageText += line.text; prev = line; continue;
         }
-
-        /* ── RULE 2 — Large vertical gap → paragraph break ─────
-         * If the gap between this line and the previous is more
-         * than 1.45× the line-height, the layout tool inserted
-         * explicit inter-paragraph spacing (block paragraph
-         * style with no indent).                                 */
-        if (dy > lineH * 1.45) {
-          pageText += '\n\n' + line.text;
-          prev = line; continue;
-        }
-
-        /* ── RULES 3 & 4 — applied within normal line spacing ── */
-
-        /* Rule 3 — first-line indent
-         * A new line that starts more than 0.7 em to the right
-         * of the established left margin signals an indented
-         * first line of a new paragraph.                         */
+        if (dy > lineH * 1.45) { pageText += '\n\n' + line.text; prev = line; continue; }
         const isIndented = line.minX > leftMargin + lineH * 0.7;
-
-        /* Rule 4 — orphan / short previous line
-         * If the PREVIOUS line ended more than 22 % of the column
-         * width before the right margin, it was the last (short)
-         * line of a paragraph.  Whatever follows is new content. */
         const prevShort  = prev.maxEndX < rightMargin - colWidth * 0.22;
-
-        if (isIndented || prevShort) {
-          pageText += '\n\n' + line.text;
-          prev = line; continue;
-        }
-
-        /* ── Soft join — same paragraph continuation ────────────
-         * If the previous line ended with a hyphen, the word was
-         * split across lines; remove the hyphen before merging.   */
-        if (pageText.endsWith('-')) {
-          pageText = pageText.slice(0, -1) + line.text;
-        } else {
-          pageText += ' ' + line.text;
-        }
-
+        if (isIndented || prevShort) { pageText += '\n\n' + line.text; prev = line; continue; }
+        if (pageText.endsWith('-')) pageText = pageText.slice(0, -1) + line.text;
+        else pageText += ' ' + line.text;
         prev = line;
       }
-
       full += pageText + '\n\n';
     }
 
@@ -1456,69 +1115,25 @@ async function loadPDF(file) {
     }
 
     const entry = {
-      id:       Date.now().toString(),
-      name:     file.name.replace(/\.pdf$/i, ''),
-      size:     file.size,
-      date:     new Date().toLocaleDateString('pt-BR'),
-      text:     full,
-      blocks,
-      chunks,
-      favorite: false,
+      id: Date.now().toString(), name: file.name.replace(/\.pdf$/i, ''),
+      size: file.size, date: new Date().toLocaleDateString('pt-BR'),
+      text: full, blocks, chunks, favorite: false,
     };
     S.files.unshift(entry);
-    S.activeId     = entry.id;
-    S.blocks       = blocks;
-    S.chunks       = chunks;
-    S.currentChunk = -1;
-
-    lsSave(); renderAll();
-    toast(`PDF carregado — ${chunks.length} frases`);
-  } catch(err) {
-    console.error(err); toast('Erro ao processar o PDF.');
-  }
+    S.activeId = entry.id; S.blocks = blocks; S.chunks = chunks; S.currentChunk = -1;
+    lsSave(); renderAll(); toast(`PDF carregado — ${chunks.length} frases`);
+  } catch(err) { console.error(err); toast('Erro ao processar o PDF.'); }
   loading(false);
 }
 
 // ──────────────────────────────────────────────
-// VOICES
+// VOICES UI
 // ──────────────────────────────────────────────
-function voiceScore(v) {
-  let s = 0;
-  const n = v.name.toLowerCase();
-  if (v.lang === 'pt-BR')           s += 100;
-  else if (v.lang.startsWith('pt')) s += 50;
-  if (n.includes('google'))         s += 40;
-  else if (n.includes('microsoft')) s += 30;
-  return s;
-}
-
-function loadVoices() {
-  const all = window.speechSynthesis.getVoices();
-  if (!all.length) return;
-  S.voices = [...all].sort((a, b) => voiceScore(b) - voiceScore(a));
-  renderVoiceSelect();
-  if (S._pendingVoice) {
-    const found = S.voices.find(v => v.name === S._pendingVoice);
-    if (found) S.selectedVoice = found;
-    S._pendingVoice = null;
-  }
-  if (!S.selectedVoice && S.voices.length) S.selectedVoice = S.voices[0];
-  if (S.selectedVoice) {
-    // sync all selects + mobile pill label
-    ['voice-select','mbs-voice-select','mbs-voice-select-x'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = S.selectedVoice.name;
-    });
-    const vpl = document.getElementById('mbs-voice-pill-val');
-    if (vpl) vpl.textContent = getVoiceAbbr(S.selectedVoice);
-  }
-}
-
 function renderVoiceSelect() {
   const targets = [
-    document.getElementById('voice-select'),       // desktop
-    document.getElementById('mbs-voice-select'),   // compact pill
-    document.getElementById('mbs-voice-select-x'), // expanded area
+    document.getElementById('voice-select'),
+    document.getElementById('mbs-voice-select'),
+    document.getElementById('mbs-voice-select-x'),
   ].filter(Boolean);
 
   targets.forEach(sel => { sel.innerHTML = ''; });
@@ -1531,19 +1146,17 @@ function renderVoiceSelect() {
 
 function setVoice(name) {
   S.selectedVoice = S.voices.find(v => v.name === name) || S.voices[0];
-  // keep all voice selects in sync
   ['voice-select', 'mbs-voice-select', 'mbs-voice-select-x'].forEach(id => {
     const el = document.getElementById(id);
     if (el && S.selectedVoice) el.value = S.selectedVoice.name;
   });
-  // update compact pill label
   const vpl = document.getElementById('mbs-voice-pill-val');
   if (vpl) vpl.textContent = getVoiceAbbr(S.selectedVoice);
   lsSave();
 }
 
 // ──────────────────────────────────────────────
-// SPEECH
+// SPEECH & PRE-FETCH
 // ──────────────────────────────────────────────
 function togglePlay() {
   if (!S.chunks.length) return;
@@ -1558,66 +1171,182 @@ function startFrom(idx) {
   speakChunk(idx);
 }
 
-function speakChunk(idx) {
+function clearBuffer() {
+  if (_nextAudio && _nextAudio.src) {
+    URL.revokeObjectURL(_nextAudio.src);
+    _nextAudio.src = '';
+    _nextAudio = null;
+  }
+  _nextIdx = -1;
+  _isPrefetching = false;
+}
+
+async function prefetchChunk(idx) {
+  if (idx < 0 || idx >= S.chunks.length || !_elevenKey || _isPrefetching) return;
+  const text = (S.chunks[idx] || '').trim();
+  
+  if (!text) {
+    prefetchChunk(idx + 1);
+    return;
+  }
+
+  _isPrefetching = true;
+  const voiceId = S.selectedVoice ? S.selectedVoice.id : 'EXAVITQu4vr4xnSDxMaL';
+
+  try {
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`, {
+      method: 'POST',
+      headers: {
+        'xi-api-key': _elevenKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        text: text,
+        model_id: 'eleven_multilingual_v2'
+      })
+    });
+
+    if (response.ok) {
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      _nextAudio = new Audio(audioUrl);
+      _nextIdx = idx;
+    }
+  } catch (e) {
+    console.warn('Falha no pre-fetch da frase', idx, e);
+  } finally {
+    _isPrefetching = false;
+  }
+}
+
+async function speakChunk(idx) {
   if (idx < 0 || idx >= S.chunks.length) { stopSpeech(); return; }
   const text = (S.chunks[idx] || '').trim();
   if (!text) { speakChunk(idx + 1); return; }
+  
+  if (!_elevenKey) {
+    document.getElementById('api-modal-overlay').classList.add('open');
+    return;
+  }
 
-  const u = new SpeechSynthesisUtterance(text);
-  if (S.selectedVoice) u.voice = S.selectedVoice;
-  u.rate   = Math.max(0.1, S.rate);
-  u.volume = S.volume;
-  u.pitch  = 1;
-
-  u.onstart = () => {
-    S.isSpeaking = true; S.isPaused = false;
-    S.currentChunk = idx;
-    startElapsed(); startResumeWorkaround();
-    requestWakeLock();
-    updateUI(); highlightChunk(idx); lsSave();
-  };
-  u.onend   = () => { if (!S.isPaused) speakChunk(idx + 1); };
-  u.onerror = e  => {
-    if (e.error !== 'interrupted' && e.error !== 'canceled') speakChunk(idx + 1);
-  };
-
-  _curUtter = u;
-  window.speechSynthesis.speak(u);
+  stopSpeech(false); 
+  S.currentChunk = idx;
   S.isSpeaking = true;
   updateUI();
+  highlightChunk(idx);
+  requestWakeLock();
+
+  if (_nextIdx === idx && _nextAudio) {
+    // Áudio já estava pre-carregado no buffer
+    _currentAudio = _nextAudio;
+    _currentAudio.playbackRate = S.rate;
+    _currentAudio.volume = S.volume;
+    
+    // Limpa referências do buffer para a próxima requisição
+    _nextAudio = null;
+    _nextIdx = -1;
+  } else {
+    // Falha no buffer ou pulo de frase: precisa baixar agora
+    _isLoadingAudio = true;
+    updateUI();
+
+    const voiceId = S.selectedVoice ? S.selectedVoice.id : 'EXAVITQu4vr4xnSDxMaL';
+    try {
+      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`, {
+        method: 'POST',
+        headers: {
+          'xi-api-key': _elevenKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          text: text,
+          model_id: 'eleven_multilingual_v2'
+        })
+      });
+
+      if (!response.ok) throw new Error('Falha na API');
+
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      
+      _currentAudio = new Audio(audioUrl);
+      _currentAudio.playbackRate = S.rate;
+      _currentAudio.volume = S.volume;
+
+    } catch (error) {
+      _isLoadingAudio = false;
+      stopSpeech();
+      toast('Erro ao gerar áudio. Verifique sua franquia ou chave.');
+      return;
+    }
+  }
+
+  _currentAudio.onplay = () => {
+    _isLoadingAudio = false;
+    S.isPaused = false;
+    startElapsed();
+    updateUI();
+    lsSave();
+    // Dispara o download da próxima frase em background assim que a atual começa a tocar
+    prefetchChunk(idx + 1);
+  };
+
+  _currentAudio.onended = function() {
+    const src = this.src; // Captura a URL atual para limpar a memória
+    if (!S.isPaused) speakChunk(idx + 1);
+    URL.revokeObjectURL(src);
+  };
+
+  _currentAudio.play().catch(e => {
+    console.error("Erro ao dar play no áudio", e);
+  });
 }
 
 function pauseSpeech() {
-  window.speechSynthesis.pause();
-  S.isPaused = true;
-  stopResumeWorkaround(); stopElapsed(); releaseWakeLock(); updateUI();
+  if (_currentAudio) {
+    _currentAudio.pause();
+    S.isPaused = true;
+    stopElapsed();
+    releaseWakeLock();
+    updateUI();
+  }
 }
 
 function resumeSpeech() {
-  window.speechSynthesis.resume();
+  if (_currentAudio) {
+    _currentAudio.play();
+    S.isPaused = false;
+    startElapsed();
+    requestWakeLock();
+    updateUI();
+  }
+}
+
+function stopSpeech(resetTimer = true) {
+  if (_currentAudio) {
+    _currentAudio.pause();
+    _currentAudio.src = ''; 
+    _currentAudio = null;
+  }
+  clearBuffer(); // Destrói o buffer para não tocar áudio errado em saltos de leitura
+  
+  S.isSpeaking = false; 
   S.isPaused = false;
-  startElapsed(); startResumeWorkaround(); updateUI();
+  _isLoadingAudio = false;
+  stopElapsed();
+  releaseWakeLock();
+  
+  if (resetTimer) {
+    S.elapsedSec = 0;
+    unhighlightAll();
+    document.getElementById('pb-elapsed').textContent = '0:00';
+  }
+  updateUI();
 }
 
-function stopSpeech() {
-  window.speechSynthesis.cancel();
-  S.isSpeaking = false; S.isPaused = false; _curUtter = null;
-  stopResumeWorkaround(); stopElapsed(); releaseWakeLock();
-  S.elapsedSec = 0;
-  updateUI(); unhighlightAll();
-  document.getElementById('pb-elapsed').textContent = '0:00';
-}
-
-/*
- * restartCurrentChunk: cancel + re-speak the same index without touching
- * the elapsed timer. Used when rate or volume changes mid-sentence.
- */
 function restartCurrentChunk() {
   const cur = S.currentChunk;
-  window.speechSynthesis.cancel();
-  stopResumeWorkaround();
-  S.isSpeaking = false; S.isPaused = false; _curUtter = null;
-  // Keep elapsed running — don't reset elapsedSec
+  stopSpeech(false);
   setTimeout(() => speakChunk(cur), 60);
 }
 
@@ -1629,7 +1358,6 @@ function setRate(r) {
   document.getElementById('speed-slider').value = r;
   setSpeedMini(r);
   refreshBadges();
-  // Debounce restart so slider drag doesn't stutter
   clearTimeout(_rateDebounce);
   _rateDebounce = setTimeout(() => {
     if (S.isSpeaking && !S.isPaused) restartCurrentChunk();
@@ -1641,30 +1369,12 @@ function setVolume(v) {
   S.volume = v;
   document.getElementById('vol-slider').value = v;
   refreshBadges();
-  /*
-   * Volume change while speaking: restart current chunk after a short debounce.
-   * The Web Speech API does not expose a live volume handle — the only way to
-   * hear an immediate change is to re-issue the utterance with the new value.
-   * 150 ms debounce = feels instant, avoids thrashing while dragging the slider.
-   */
   clearTimeout(_volDebounce);
   _volDebounce = setTimeout(() => {
     if (S.isSpeaking && !S.isPaused) restartCurrentChunk();
   }, 150);
   lsSave();
 }
-
-// Chrome 15-s TTS stall workaround
-function startResumeWorkaround() {
-  stopResumeWorkaround();
-  _resumeInt = setInterval(() => {
-    if (S.isSpeaking && !S.isPaused && window.speechSynthesis.speaking) {
-      window.speechSynthesis.pause();
-      window.speechSynthesis.resume();
-    }
-  }, 10000);
-}
-function stopResumeWorkaround() { clearInterval(_resumeInt); _resumeInt = null; }
 
 // ──────────────────────────────────────────────
 // ELAPSED TIMER
@@ -1708,21 +1418,15 @@ function renderSidebar() {
   const wrap    = document.getElementById('sb-files');
   const isFavs  = S.filterView === 'favorites';
   wrap.innerHTML = '';
-
-  // Keep section title in sync with the active view
   const titleEl = document.querySelector('.sb-section-title');
   if (titleEl) titleEl.textContent = isFavs ? 'Favoritos' : 'Arquivos';
-
-  // Apply filter — 'favorites' shows only starred files
   const visible = isFavs ? S.files.filter(f => f.favorite) : S.files;
-
   if (!visible.length) {
     wrap.innerHTML = isFavs
       ? '<div class="no-files">Nenhum favorito ainda.<br>Toque em ★ num arquivo para salvá-lo aqui.</div>'
       : '<div class="no-files">Nenhum arquivo ainda.<br>Importe um PDF para começar.</div>';
     return;
   }
-
   const groups = {};
   visible.forEach(f => { (groups[f.date] || (groups[f.date] = [])).push(f); });
   const today = new Date().toLocaleDateString('pt-BR');
@@ -1766,18 +1470,6 @@ function buildFileItem(f) {
   return el;
 }
 
-/*
- * renderContent: renders the active file as structured prose.
- *
- * Block types:
- *   h1  → <h1 class="prose-h1">  (chapter titles, ALL-CAPS headings)
- *   h2  → <h2 class="prose-h2">  (section titles, prefácio, etc.)
- *   p   → <p  class="prose-p">   (body paragraphs)
- *
- * Every sentence inside each block is wrapped in a <span class="sentence">
- * so it can be clicked to start reading from that point and highlighted
- * while being read.
- */
 function renderContent() {
   const active = S.files.find(f => f.id === S.activeId);
   const hdr    = document.getElementById('content-header');
@@ -1807,9 +1499,7 @@ function renderContent() {
 
   let gIdx = 0;
   (active.blocks || []).forEach(block => {
-    const tagName = block.type === 'h1' ? 'h1'
-                  : block.type === 'h2' ? 'h2'
-                  : 'p';
+    const tagName = block.type === 'h1' ? 'h1' : block.type === 'h2' ? 'h2' : 'p';
     const el = document.createElement(tagName);
     el.className = `prose-${tagName}`;
 
@@ -1822,7 +1512,6 @@ function renderContent() {
       if (idx === S.currentChunk) span.classList.add('active');
       span.addEventListener('click', () => startFrom(idx));
       el.appendChild(span);
-      // Add natural inter-sentence space for body paragraphs
       if (tagName === 'p') el.appendChild(document.createTextNode(' '));
     });
     body.appendChild(el);
@@ -1845,12 +1534,12 @@ function renderWaveform() {
 }
 
 function updateUI() {
-  const playing = S.isSpeaking && !S.isPaused;
-  document.getElementById('icon-play').style.display  = playing ? 'none'  : 'block';
-  document.getElementById('icon-pause').style.display = playing ? 'block' : 'none';
+  const playing = S.isSpeaking && !S.isPaused && !_isLoadingAudio;
+  document.getElementById('icon-play').style.display  = (S.isSpeaking && !S.isPaused) ? 'none'  : 'block';
+  document.getElementById('icon-pause').style.display = (S.isSpeaking && !S.isPaused) ? 'block' : 'none';
   document.getElementById('btn-stop').disabled = !S.isSpeaking && !S.isPaused;
   document.getElementById('waveform').classList.toggle('playing', playing);
-  updateMobileUI();
+  updateMobileUI(playing);
 }
 
 function updateStats() {
@@ -1989,7 +1678,7 @@ function refreshBadges() {
     : `${r.toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}×`;
   document.getElementById('speed-badge').textContent = rL;
   document.getElementById('vol-badge').textContent   = `${Math.round(S.volume * 100)}%`;
-  updateMobileUI();
+  updateMobileUI(S.isSpeaking && !S.isPaused && !_isLoadingAudio);
 }
 function setSpeedMini(r) {
   const opts = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
@@ -2020,13 +1709,30 @@ document.addEventListener('click', e => {
   if (!e.target.closest('#ctx-menu')) document.getElementById('ctx-menu').classList.remove('open');
 });
 document.addEventListener('keydown', e => {
+  // Lógica da Tecla ESC
+  if (e.code === 'Escape') {
+    const modal = document.getElementById('api-modal-overlay');
+    if (modal.classList.contains('open')) {
+      closeApiModal();
+      return;
+    }
+    // Se estiver digitando em outro input, o ESC não para o áudio
+    if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+    stopSpeech();
+    return;
+  }
+
+  // Previne atalhos de background se estiver digitando em um input
   if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
+  
+  // Bloqueia atalhos de player se o modal de chave estiver aberto sobrepondo a tela
+  const modal = document.getElementById('api-modal-overlay');
+  if (modal.classList.contains('open')) return;
+
   if      (e.code === 'Space')      { e.preventDefault(); togglePlay(); }
   else if (e.code === 'ArrowLeft')  { e.preventDefault(); prevChunk(); }
   else if (e.code === 'ArrowRight') { e.preventDefault(); nextChunk(); }
-  else if (e.code === 'Escape')     { stopSpeech(); }
 });
-window.speechSynthesis.onvoiceschanged = loadVoices;
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && S.isSpeaking && !S.isPaused) {
     requestWakeLock();
@@ -2064,7 +1770,6 @@ function collapseBottomSheet() {
   document.getElementById('mobile-bs').classList.remove('mbs-expanded');
 }
 
-// Swipe up/down on handle to expand/collapse
 (function() {
   function init() {
     const handle = document.getElementById('mbs-handle');
@@ -2082,9 +1787,6 @@ function collapseBottomSheet() {
   else init();
 })();
 
-// ──────────────────────────────────────────────
-// MOBILE — SPEED CYCLE
-// ──────────────────────────────────────────────
 const _speedSteps = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 function cycleSpeed() {
   const cur = _speedSteps.findIndex(s => Math.abs(s - S.rate) < 0.05);
@@ -2102,59 +1804,36 @@ function mobileVoiceClick() {
   }
 }
 
-// ──────────────────────────────────────────────
-// MOBILE — HELPERS
-// ──────────────────────────────────────────────
-
-/*
- * getVoiceAbbr: 2-char language region code shown inside the voice pill.
- * "pt-BR" → "BR"  |  "en-US" → "EN"  |  "pt" → "PT"  |  null → "Voz"
- */
 function getVoiceAbbr(voice) {
   if (!voice) return 'Voz';
   const parts = (voice.lang || '').split('-');
   return (parts[1] || parts[0] || 'Voz').toUpperCase().slice(0, 2);
 }
 
-/*
- * fmtRate: canonical display string for a playback rate.
- * 1  → "1×"   |  1.25 → "1.25×"  |  0.75 → "0.75×"
- */
 function fmtRate(r) {
   return Number.isInteger(r)
     ? `${r}×`
     : `${r.toFixed(2).replace(/0+$/, '').replace(/\.$/, '')}×`;
 }
 
-// ──────────────────────────────────────────────
-// MOBILE — UI SYNC
-// ──────────────────────────────────────────────
-function updateMobileUI() {
+function updateMobileUI(playing) {
   const bs = document.getElementById('mobile-bs');
   if (!bs) return;
-  const playing = S.isSpeaking && !S.isPaused;
 
-  /* play/pause icons */
   const ip = document.getElementById('mbs-icon-play');
   const iu = document.getElementById('mbs-icon-pause');
-  if (ip) ip.style.display = playing ? 'none'  : 'block';
-  if (iu) iu.style.display = playing ? 'block' : 'none';
+  if (ip) ip.style.display = (S.isSpeaking && !S.isPaused) ? 'none'  : 'block';
+  if (iu) iu.style.display = (S.isSpeaking && !S.isPaused) ? 'block' : 'none';
 
-  /* wave animation */
   bs.classList.toggle('mbs-playing', playing);
 
-  /* stop button (expanded area) */
   const stopM = document.getElementById('mbs-btn-stop-m');
   if (stopM) stopM.disabled = !S.isSpeaking && !S.isPaused;
 
-  /* ── speed pill ─────────────────────────────── */
   const rL = fmtRate(S.rate);
-
-  // pill face label
   const spl = document.getElementById('mbs-speed-pill-val');
   if (spl) spl.textContent = rL;
 
-  // compact overlay select
   const css = document.getElementById('mbs-speed-select');
   if (css) {
     const nearest = [0.5,0.75,1,1.25,1.5,1.75,2]
@@ -2162,25 +1841,20 @@ function updateMobileUI() {
     css.value = nearest;
   }
 
-  // expanded badge + slider
   const sb3 = document.getElementById('mbs-speed-badge');  if (sb3) sb3.textContent = rL;
   const ss  = document.getElementById('mbs-speed-slider'); if (ss)  ss.value = S.rate;
 
-  /* ── voice pill ─────────────────────────────── */
   const vpl = document.getElementById('mbs-voice-pill-val');
   if (vpl) vpl.textContent = getVoiceAbbr(S.selectedVoice);
 
-  // compact overlay select + expanded select
   ['mbs-voice-select', 'mbs-voice-select-x'].forEach(id => {
     const el = document.getElementById(id);
     if (el && S.selectedVoice) el.value = S.selectedVoice.name;
   });
 
-  /* ── volume slider ──────────────────────────── */
   const vs = document.getElementById('mbs-vol-slider');
   if (vs) vs.value = S.volume;
 
-  /* ── progress text ──────────────────────────── */
   const prog = document.getElementById('mbs-prog-text');
   if (prog) prog.textContent = S.chunks.length
     ? `${S.currentChunk >= 0 ? S.currentChunk + 1 : 0} / ${S.chunks.length}`
@@ -2192,7 +1866,11 @@ function updateMobileUI() {
 // ──────────────────────────────────────────────
 (async function initApp() {
   await lsLoad();
-  loadVoices();
+  if (_elevenKey) {
+    loadElevenVoices();
+  } else {
+    document.getElementById('api-modal-overlay').classList.add('open');
+  }
   renderAll();
   refreshBadges();
 })();
